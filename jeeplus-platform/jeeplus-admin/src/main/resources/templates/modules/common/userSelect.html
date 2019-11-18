@@ -1,0 +1,271 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//bootstrap treeview初始化
+            //jsTree初始化
+            var to = false;
+            $('#search_q').keyup(function () {
+                if(to) { clearTimeout(to); }
+                to = setTimeout(function () {
+                    var v = $('#search_q').val();
+                    $('#jstree').jstree(true).search(v);
+                }, 250);
+            });
+            $('#jstree').jstree({
+                'core' : {
+                    "multiple" : false,
+                    "animation" : 0,
+                    "themes" : {"icons":true , "stripes":false, "responsive": false},
+                    'data' : {
+                        "url" : "${ctx}/sys/office/treeData",
+                        "dataType" : "json"
+                    }
+                },
+                "conditionalselect" : function (node, event) {
+                    return false;
+                },
+                'plugins': [ 'types', "wholerow",  "search"],
+				"types": {
+					"default": {
+						"icon": "fa fa-folder text-custom"
+					},
+					"file": {
+						"icon": "fa fa-file text-success"
+					}
+				}
+
+            }).bind("activate_node.jstree", function (obj, e) {
+                var node = $('#jstree').jstree(true).get_selected(true)[0];
+
+                var id = node.id == '0' ? '' :node.id;
+                if(node.original.type == 1){//level=0 代表公司
+                    $("#companyId").val(id);
+                    $("#companyName").val(node.text);
+                    $("#officeId").val("");
+                    $("#officeName").val("");
+                }else{
+                    $("#companyId").val("");
+                    $("#companyName").val("");
+                    $("#officeId").val(id);
+                    $("#officeName").val(node.text);
+                }
+
+                $('#table').bootstrapTable('refresh');
+
+            }).on('loaded.jstree', function() {
+                $("#jstree").jstree('open_all');
+            });
+
+
+			//初始化表格
+			  $('#table').bootstrapTable({
+				  
+				  //请求方法
+                  method: 'post',
+                  //类型json
+                  dataType: "json",
+                  contentType: "application/x-www-form-urlencoded",
+				  //移动端自适应
+				  mobileResponsive: true,
+				 //是否显示行间隔色
+				  striped: true,
+				  //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+				  cache: false,
+				  //是否显示分页（*）
+				  pagination: true,
+				  //排序方式
+				  sortOrder: "asc",
+				  //初始化加载第一页，默认第一页
+				  pageNumber:1,
+				  height: 450,
+				  //每页的记录行数（*）
+				  pageSize: 5,
+				  //可供选择的每页的行数（*）
+				  pageList: [5, 10, 25],
+				  //这个接口需要处理bootstap table传递的固定参数,并返回特定格式的json数据
+				  url: "${ctx}/sys/user/list",
+                  //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+                  //queryParamsType:'',
+                  ////查询参数,每次调用是会带上这个参数，可自定义
+                  queryParams : function(params) {
+                      var searchParam = $("#searchForm").serializeJSON();
+                      searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+                      searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+                      if(params.sort && params.order){
+                          searchParam.orderBy = params.sort+ " "+  params.order;
+                      }
+                      return searchParam;
+                  },
+                  //分页方式：clrient客户端分页，server服务端分页（*）
+	                sidePagination: "server",
+	                onClickRow: function(row, $el){
+	                },
+	                columns: [ {
+						checkbox: true
+
+					}, {
+				        field: 'loginName',
+				        title: '登录名',
+				        sortable: true
+				       
+				    }, {
+				        field: 'name',
+				        title: '姓名',
+				        sortable: true,
+				    }, {
+				        field: 'company.name',
+				        title: '归属公司'
+				    }, {
+				        field: 'office.name',
+				        title: '归属部门'
+				    }]
+				
+				});
+
+            $("#selectedUsers").tagsinput({
+                itemValue: 'id',
+                itemText: 'name'
+            });
+
+            $('#selectedUsers').on('itemRemoved', function(event) {
+                var rows = $('#table').bootstrapTable("getData");
+                for(var i=0; i<rows.length; i++){
+                    if(event.item.id === rows[i].id){
+                        $('#table').bootstrapTable("uncheck", i);
+                    }
+                }
+            });
+
+
+            $('#table').on('uncheck.bs.table check.bs.table check-all.bs.table',function(e,rows){
+                var datas = $.isArray(rows) ? rows : [rows];        // 点击时获取选中的行或取消选中的行
+               for(var i=0; i<datas.length; i++){
+                   var row = datas[i];
+                   var ids = ","+getIdSelections().join(",")+",";
+                   if(row['0']){
+                       if(ids.indexOf(","+row.id+",") < 0) {
+                           $('#selectedUsers').tagsinput('add', {id: row.id, name: row.name, loginName: row.loginName});
+                       }
+                   }else{
+
+                       if(ids.indexOf(","+row.id+",") >= 0){
+                           $('#selectedUsers').tagsinput('remove', { id: row.id, name: row.name ,loginName: row.loginName});
+                       }
+
+                   }
+
+                }
+            });
+
+			$('#table').on('uncheck-all.bs.table',function(rowsAfter, rowsBefore){
+				var rows = $('#table').bootstrapTable('getData', {useCurrentPage:true});
+				for(var i=0; i<rows.length; i++){
+					var row = rows[i];
+					var ids = ","+getIdSelections().join(",")+",";
+
+						if(ids.indexOf(","+row.id+",") >= 0){
+							$('#selectedUsers').tagsinput('remove', { id: row.id, name: row.name ,loginName: row.loginName});
+						}
+
+
+				}
+			});
+
+            $('#table').on("load-success.bs.table", function(data) {
+               var rows = $('#table').bootstrapTable("getData");
+               var ids = ","+getIdSelections().join(",")+",";
+               for(var i=0; i<rows.length; i++){
+                   if(ids.indexOf(","+rows[i].id+",") >= 0){
+                       $('#table').bootstrapTable("check", i);
+                   }
+               }
+            });
+
+			  $('#table').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+		                'check-all.bs.table uncheck-all.bs.table', function () {
+		            $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
+		            $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+		        });
+	
+			  
+				    
+			  $("#search").click("click", function() {// 绑定查询按扭
+				  $('#table').bootstrapTable('refresh');
+				});
+			  $("#reset").click("click", function() {// 绑定查询按扭
+				  $("#searchForm  input").val("");
+				  $("#searchForm  select").val("");
+				  $("#jstree").jstree(true).deselect_all();
+				  $('#table').bootstrapTable('refresh');
+				});
+			  
+			  
+		});
+		
+		  function getIdSelections() {
+              return $.map($("#selectedUsers").tagsinput('items'), function (row) {
+                  return row.id
+              });
+		    }
+        function getLoginNameSelections() {
+            return $.map($("#selectedUsers").tagsinput('items'), function (row) {
+                return row.loginName
+            });
+        }
+
+        function getNameSelections() {
+		        return $.map($("#selectedUsers").tagsinput('items'), function (row) {
+		            return row.name
+		        });
+		    }
+		  
+		  function getSelections() {
+		        return $.map($("#selectedUsers").tagsinput('items'), function (row) {
+		            return row
+		        });
+		    }
+		  
+	</script>
+
+		<div class="row m-15">
+			<div class="col-sm-3 col-md-2" >
+				<div class="input-group">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-sm waves-effect waves-light btn-custom"><i class="fa fa-search"></i></button>
+					</span>
+					<input type="text" class="form-control input-sm"  id="search_q" placeholder="查找..." >
+				</div>
+				<div id="jstree" class="overflow-auto; border-0"></div>
+			</div>
+			<div  class="col-sm-6 col-md-8">
+				<!-- 搜索框-->
+				<form id="searchForm" class="form-inline" >
+					<input type="hidden" id="companyId" name="company.id"/>
+					 <input type="hidden" id="officeId" name="office.id"/>
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="登录名：">登录名：</label>
+						<input type="text" name="loginName" maxlength="100"  class="input-sm form-control"/>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="姓名：">姓名：</label>
+						<input type="text" name="name" maxlength="100"  class="input-sm form-control"/>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+						<a  id="search" class="btn btn-sm btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+						<a  id="reset" class="btn btn-sm btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+					</div>
+				</form>
+
+				<!-- 表格 -->
+				<table id="table">
+				</table>
+
+			</div>
+			<div class="col-sm-3 col-md-2">
+				已选人员:
+				<label  class="form-control" id="selectedUsers" value="" />
+			</div>
+		</div>
+<% } %>

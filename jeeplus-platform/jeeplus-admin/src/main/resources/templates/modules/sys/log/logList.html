@@ -1,0 +1,80 @@
+<%
+layout("/include/_container.html", {title:"日志查询", parent:"系统监控"}){
+%>
+<script>
+
+	function getLog(value) {
+
+	    $("#type").val(value);
+        $table.bootstrapTable('refresh');
+    }
+
+</script>
+
+		<ul class="nav nav-tabs mt-2" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link active"  onclick="getLog(1)"   data-toggle="tab" href="#" role="tab" aria-controls="1" aria-selected="true">登录日志</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link"  onclick="getLog(2)"   data-toggle="tab" href="#" role="tab" aria-controls="2" aria-selected="false">访问日志</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link"  onclick="getLog(3)"  data-toggle="tab" href="#" role="tab" aria-controls="3" aria-selected="false">异常日志</a>
+			</li>
+
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active show"  role="tabpanel" aria-labelledby="home-tab">
+
+			<!-- 搜索 -->
+			<div id="search-collapse" class="white-box collapse m-b-5"  style="background: #fafafa;">
+				<a class="jp-ti-close close" onclick="$('#search-collapse').fadeToggle()">
+					<i class="fa fa-times"></i>
+				</a>
+				<form id="searchForm" class="form-inline">
+					<input type="hidden" id="type" name="type" value="1">
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="操作菜单：">操作菜单：</label>
+						<input id="title" name="title" type="text" maxlength="50" class="form-control "/>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="用户id：">操作用户：</label>
+						<input id="createBy.name" name="createBy.name" type="text" maxlength="50" class="form-control "/>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="URI：">URI：</label>
+						<input id="requestUri" name="requestUri" type="text" maxlength="50"  class="form-control "/>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+						<label class="m-r-10" title="日期范围：">日期范围：</label>
+						<div class="input-daterange input-group" id="date-range">
+							<input type="text" id="beginDate" name="beginDate" placeholder="请选择日期" readonly class="form-control" name="start">
+							<span class="input-group-text bg-custom b-0 text-white">to</span>
+							<input type="text"  readonly id="endDate" name="endDate" placeholder="请选择日期" class="form-control" name="end">
+						</div>
+					</div>
+					<div class="form-group m-b-10 m-r-10">
+							<a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+							<a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+					</div>
+				</form>
+			</div>
+
+			<!-- 工具栏 -->
+			<div id="toolbar">
+				<% if(shiro.hasPermission("sys:log:del")){ %>
+				<button id="remove" class="btn btn-danger waves-effect w-xs waves-light" disabled onclick="deleteAll()">
+					<i class="fa fa-remove"></i> 删除
+				</button>
+				<button class="btn btn-danger waves-effect w-xs waves-light"  onclick="empty()"  title="清空"><i class="fa fa-trash"></i> 清空</button>
+				<% } %>
+
+			</div>
+			<!-- 表格 -->
+			<table id="table"
+				   data-toolbar="#toolbar">
+			</table>
+		</div>
+		</div>
+<% include("logList.js"){} %>
+<% } %>

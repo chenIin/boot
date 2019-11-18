@@ -1,0 +1,192 @@
+
+<!-- Right Sidebar -->
+<div class="side-bar right-bar p-10">
+    <a href="javascript:void(0);" class="right-bar-toggle">
+        <i class="zmdi zmdi-close-circle-o"></i>
+    </a>
+    <h4 class="">风格设置</h4>
+
+    <h5 class="m-t-20">导航模式</h5>
+    <ul id="layout" class="m-t-20 jp-layout-color layout-list" style="padding-left: 30px">
+
+        <li>
+            <a  data-layout="horizontal" title="顶部菜单布局">
+                <div class="jp-layout-header" style="background-color: #2f3e47;"></div>
+                <div class="jp-layout-side" style="background-color:#2f3e47;"></div>
+            </a>
+        </li>
+
+        <li>
+            <a  data-layout="vertical" title="侧边菜单布局">
+                <div class="jp-layout-header" style="background-color: #f0f4f5;"></div>
+                <div class="jp-layout-side" style="background-color:#2f3e47;"></div>
+            </a>
+        </li>
+
+
+    </ul>
+    <hr/>
+    <h5 class="m-t-20">主题设置</h5>
+    <ul id="themecolors" class="m-t-20 jp-setTheme-color theme-list" style="padding-left: 30px">
+
+        <li>
+            <a jp-event="setTheme" data-theme="default">
+                <div class="jp-setTheme-header" style="background-color: #2195f3;"></div>
+                <div class="jp-setTheme-side" style="background-color:#2f3e47;">
+                    <div class="jp-setTheme-logo" style="background-color: #2195f3;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="default_light">
+                <div class="jp-setTheme-header" style="background-color: #2195f3;"></div>
+                <div class="jp-setTheme-side" style="background-color:#ffffff;">
+                    <div class="jp-setTheme-logo" style="background-color: #2195f3;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="green">
+                <div class="jp-setTheme-header" style="background-color: #57c5a5;"></div>
+                <div class="jp-setTheme-side" style="background-color:#2f3e47;">
+                    <div class="jp-setTheme-logo" style="background-color: #57c5a5;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="green_light">
+                <div class="jp-setTheme-header" style="background-color: #57c5a5;"></div>
+                <div class="jp-setTheme-side" style="background-color:#ffffff;">
+                    <div class="jp-setTheme-logo" style="background-color: #57c5a5;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="red">
+                <div class="jp-setTheme-header" style="background-color: #fe6271;"></div>
+                <div class="jp-setTheme-side" style="background-color:#2f3e47;">
+                    <div class="jp-setTheme-logo" style="background-color: #fe6271;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="red_light">
+                <div class="jp-setTheme-header" style="background-color: #fe6271;"></div>
+                <div class="jp-setTheme-side" style="background-color:#ffffff;">
+                    <div class="jp-setTheme-logo" style="background-color: #fe6271;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="blue">
+                <div class="jp-setTheme-header" style="background-color: #2195f3;"></div>
+                <div class="jp-setTheme-side" style="background-color:#2f3e47;">
+                    <div class="jp-setTheme-logo" style="background-color: #292929;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="blue_light">
+                <div class="jp-setTheme-header" style="background-color: #2195f3;"></div>
+                <div class="jp-setTheme-side" style="background-color:#ffffff;">
+                    <div class="jp-setTheme-logo" style="background-color: #ffffff;"></div>
+                </div>
+            </a>
+        </li>
+
+        <li>
+            <a jp-event="setTheme" data-theme="light">
+                <div class="jp-setTheme-header" style="background-color: #ffffff;"></div>
+                <div class="jp-setTheme-side" style="background-color:#ffffff;">
+                    <div class="jp-setTheme-logo" style="background-color: #ffffff;"></div>
+                </div>
+            </a>
+        </li>
+
+    </ul>
+    <hr>
+    <h5 class="m-b-15">其他设置</h5>
+    <div class="custom-control custom-switch m-l-5">
+        <input type="checkbox" class="custom-control-input" id="content-tab" checked>
+        <label class="custom-control-label" for="content-tab">开启多页签</label>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $('#themecolors').on('click', 'a', function () {
+            $('#themecolors li a').parent().removeClass('working');
+            $(this).parent().addClass('working');
+            var theme = $(this).attr("data-theme");
+            changeTheme(theme);
+        });
+
+        if (Cookies && Cookies.get('theme')) {
+            var theme = Cookies.get('theme');
+            $('#themecolors li a[data-theme="'+theme+'"]').parent().removeClass('working');
+            $('#themecolors li a[data-theme="'+theme+'"]').parent().addClass('working');
+        }else {
+            var theme = Cookies.get('theme');
+            $('#themecolors li a[data-theme="${fn.getDefaultTheme()}"]').parent().removeClass('working');
+            $('#themecolors li a[data-theme="${fn.getDefaultTheme()}"]').parent().addClass('working');
+        }
+        // CONTENT - content styling selection 色弱模式
+        document.querySelector('#content-tab').onchange = function() {
+            if (this.checked) {
+                Cookies.set('content-tab', 1);
+                location.reload();
+            } else {
+                Cookies.set('content-tab', 2);
+                location.reload();
+            }
+        };
+
+        // COOKIE - content styling selection
+        if (Cookies && Cookies.get('content-tab')) {
+            if(Cookies.get('content-tab') == "1"){
+                document.querySelector('#content-tab').setAttribute("checked", true)
+
+            }else {
+                document.querySelector('#content-tab').removeAttribute("checked")
+            }
+        }else {
+            document.querySelector('#content-tab').removeAttribute("checked")
+        }
+
+
+        $('#layout').on('click', 'a', function () {
+            $('#layout li a').parent().removeClass('working');
+            $(this).parent().addClass('working');
+            var layout = $(this).attr("data-layout");
+            Cookies.set('layout', layout);
+            location.reload();
+        });
+
+        if (Cookies && Cookies.get('layout')) {
+            var layout = Cookies.get('layout');
+            $('#layout li a[data-layout="'+layout+'"]').parent().removeClass('working');
+            $('#layout li a[data-layout="'+layout+'"]').parent().addClass('working');
+        }else {
+            $('#layout li a[data-layout="${fn.getDefaultLayout()}"]').parent().removeClass('working');
+            $('#layout li a[data-layout="${fn.getDefaultLayout()}"]').parent().addClass('working');
+        }
+    })
+
+
+    function changeTheme(currentStyle) {
+        $('#theme').attr({
+            href: '${ctxStatic}/common/css/' + currentStyle + '.css'
+        })
+        Cookies.set('theme', currentStyle);
+    }
+
+
+
+</script>

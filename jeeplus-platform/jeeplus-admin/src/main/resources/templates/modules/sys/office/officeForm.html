@@ -1,0 +1,86 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+        function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+            }else{
+                jp.loading();
+                jp.post("${ctx}/sys/office/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        jp.success(data.msg);
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                    }else {
+                        jp.error(data.msg);
+                    }
+                })
+            }
+
+        }
+	</script>
+	<form id="inputForm"   method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${office.id}">
+		<table class="table table-bordered  table-condensed  no-footer">
+		   <tbody>
+		      <tr>
+		         <td class="width-15 active"><label class="pull-right">上级机构:</label></td>
+		         <td class="width-35">
+					 <#treeselect id="office" name="parent.id" value="${office.parent.id!}" labelName="parent.name" labelValue="${office.parent.name!}"
+					title="机构" url="/sys/office/treeData" extId="${office.id!}"  class="form-control" allowClear="true"/></td>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>归属区域:</label></td>
+		         <td class="width-35">
+					 <#treeselect id="area" name="area.id" value="${office.area.id!}" labelName="area.name" labelValue="${office.area.name!}"
+					title="区域" allowClear="true" url="/sys/area/treeData" class="form-control required"/></td>
+		      </tr>
+		       <tr>
+		         <td class="width-15 active"><label class="pull-right"><font color="red">*</font>机构名称:</label></td>
+		         <td class="width-35"><input name="name" value="${office.name}" maxlength="50" class="form-control required"/></td>
+		         <td  class="width-15 active"><label class="pull-right">机构编码:</label></td>
+		         <td class="width-35"><input name="code" value="${office.code}" maxlength="50" class="form-control"/></td>
+		      </tr>
+		       <tr>
+		         <td class="width-15 active"><label class="pull-right">机构类型:</label></td>
+		         <td class="width-35"><#select path="type" value="${office.type!}" class="form-control" items="${fn.getDictList('sys_office_type')}" itemLabel="label" itemValue="value"/></td>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>机构级别:</label></td>
+		         <td class="width-35"><#select path="grade" value="${office.grade}" items="${fn.getDictList('sys_office_grade')}" itemLabel="label" itemValue="value" class="form-control required"/></td>
+			   </tr>
+			  <tr>
+		         <td class="width-15 active"><label class="pull-right"><font color="red">*</font>是否可用:</label></td>
+		         <td class="width-35"><#select path="useable" value="${office.useable!}" class="form-control required" items="${fn.getDictList('yes_no')}" itemLabel="label" itemValue="value"/></td>
+		         <td class="width-15 active"><label class="pull-right">主负责人:</label></td>
+		         <td class="width-35"><#userselect id="primaryPerson" name="primaryPerson.id" value="${office.primaryPerson.id!}" labelName="office.primaryPerson.name" labelValue="${office.primaryPerson.name!}"
+					 class="form-control" allowClear="true" isMultiSelected="${false}"/></td>
+			  </tr>
+			  <tr>
+				 <td class="width-15 active"><label class="pull-right">副负责人:</label></td>
+		         <td class="width-35"><#userselect id="deputyPerson" name="deputyPerson.id" value="${office.deputyPerson.id!}" labelName="office.deputyPerson.name" labelValue="${office.deputyPerson.name!}"
+					  class="form-control" allowClear="true" isMultiSelected="${false}"/></td>
+		         <td class="width-15 active"><label class="pull-right">联系地址:</label></td>
+		         <td class="width-35"><input name="address" value="${office.address!}" maxlength="50" class="form-control" /></td>
+			  </tr>
+			  <tr>
+				  <td class="width-15 active"><label class="pull-right">邮政编码:</label></td>
+		         <td class="width-35"><input name="zipCode" value="${office.zipCode!}" maxlength="50" class="form-control" /></td>
+		         <td  class="width-15 active"><label class="pull-right">负责人:</label></td>
+		         <td class="width-35"><input name="master" value="${office.master!}" maxlength="50" class="form-control" /></td>
+			  </tr>
+			  <tr>
+		         <td class="width-15 active"><label class="pull-right">电话:</label></td>
+		         <td class="width-35"><input name="phone" value="${office.phone!}" maxlength="50" class="form-control" /></td>
+		         <td class="width-15 active"><label class="pull-right">传真:</label></td>
+		         <td class="width-35"><input name="fax" value="${office.fax!}" maxlength="50" class="form-control" /></td>
+			  </tr>
+			  <tr>
+		         <td class="width-15 active"><label class="pull-right">邮箱:</label></td>
+		         <td class="width-35"><input name="email" value="${office.email!}" maxlength="50" class="form-control" /></td>
+		         <td  class="width-15 active"><label class="pull-right">备注:</label></td>
+				  <td class="width-35" colspan="3"><textarea name="remarks"  rows="3" maxlength="200" class="form-control">${office.remarks!}</textarea></td>
+		      </tr>
+	      </tbody>
+	      </table>
+	</form>
+	<% } %>

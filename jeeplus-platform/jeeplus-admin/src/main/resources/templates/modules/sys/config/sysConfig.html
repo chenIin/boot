@@ -1,0 +1,255 @@
+<%
+layout("/include/_container.html", {title:"系统配置", parent:"系统设置"}){
+%>
+
+
+	<script type="text/javascript">
+
+    function testSms(){
+      jp.confirm("测试前，请确保上面输入的配置项已经保存进数据库，如果没有，请先点击保存按钮!", function(){
+            jp.prompt("请输入手机号", function (tel) {
+                jp.block("#sms");
+                jp.post("${ctx}/sys/sysConfig/testSms", {tel:tel}, function (data) {
+                    if(data.success){
+                        jp.toastr_success(data.msg);
+                    }else {
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.unblock("#sms");
+                },function () {
+                    jp.unblock("#sms");
+                })
+            })
+        }, function(){
+
+        });
+
+    }
+    function testEmail(){
+        jp.confirm("测试前，请确保上面输入的配置项已经保存进数据库，如果没有，请先点击保存按钮!", function(){
+           jp.go("${ctx}/tools/email");
+        }, function(){
+
+        });
+
+    }
+	$(document).ready(function () {
+        var changeCheckbox = document.querySelector('.js-switch');
+
+        changeCheckbox.onchange = function() {
+            if(changeCheckbox.checked){
+                $("input[name='singleLoginType']").attr("disabled", false);
+            }else {
+                $("input[name='singleLoginType']").prop("disabled", true);
+            }
+
+
+        };
+
+        $(document).ready(function() {
+            jp.ajaxForm("#login, #theme, #sms, #email",function(data){
+
+                if(data.success){
+                    jp.toastr_success(data.msg);
+                }else{
+                    jp.toastr_error(data.msg);
+                }
+            })
+
+        });
+    });
+
+	</script>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+			<a class="nav-link active show" data-toggle="tab" href="#config1" aria-expanded="false">
+				<span>登录</span>
+			</a>
+		</li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#config2" aria-expanded="true">
+                <span>外观</span>
+            </a>
+        </li>
+        <li class="nav-item">
+			<a class="nav-link" data-toggle="tab" href="#config3" aria-expanded="true">
+				<span>短信</span>
+			</a>
+		</li>
+        <li class="nav-item">
+			<a class="nav-link" aria-expanded="false" data-toggle="tab" href="#config4">
+				<span>邮箱</span>
+			</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div id="config1" class="tab-pane fade active show">
+            <h4 style="text-align:left">单一登陆配置</h4>
+            <hr>
+            <form id="login" action="${ctx}/sys/sysConfig/save" class="form-horizontal group-border-dashed" style="padding-left: 30px;">
+                <input type="hidden" name="id" value="1">
+                <div class="form-group">
+                    <div class="checkbox checkbox-custom">
+                        <input type="checkbox" id="multiAccountLogin" ${config.multiAccountLogin! == '1'?'checked':''} name="multiAccountLogin"  value="1" data-color="#1890ff"  data-size="small" class="js-switch" />
+                        <label for="multiAccountLogin">
+                            单一登录：
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="radio radio-custom">
+                        <input id="singleLoginType1" name="singleLoginType" ${config.singleLoginType! == '1'?'checked':''}  ${config.multiAccountLogin! == '1'?'':'disabled'}  value="1"  type="radio"  />
+                        <label for="singleLoginType1">
+                            后登陆踢出先登录
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="radio radio-custom">
+                        <input id="singleLoginType2" name="singleLoginType" ${config.singleLoginType! == '2'?'checked':''}  ${config.multiAccountLogin! == '1'?'':'disabled'}  value="2"  type="radio"  />
+                        <label for="singleLoginType2">
+                            已登陆禁止再登陆
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                        <button data-loading-text="正在提交..." class="btn btn-custom waves-effect waves-light w-xs m-b-5">保存</button>
+                </div>
+
+            </form>
+		</div>
+
+        <div id="config2" class="tab-pane fade">
+            <h4 style="text-align:left">外观配置</h4>
+            <hr>
+            <form id="theme" action="${ctx}/sys/sysConfig/save" class="form-horizontal group-border-dashed">
+                <input type="hidden" name="id" value="1">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label">产品标题:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input type="text"  class="form-control" name="productName"  value="${config.productName!}"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label">产品logo:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <#imageUpload path="logo" uploadPath="/photo"  value="${config.logo!}" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label">默认布局:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <#select path="defaultLayout" class="required" notAllowNull="${true}" items="${fn.getDictList('layout')}" itemLabel="label" itemValue="value" value="${config.defaultLayout!}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label">默认主题:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <#select path="defaultTheme" class="required" notAllowNull="${true}" items="${fn.getDictList('theme')}" itemLabel="label" itemValue="value" value="${config.defaultTheme!}"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label">首页地址:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input type="text" placeholder="登录成功后跳转的地址，不设置跳转到默认首页。" class="form-control" name="homeUrl"  value="${config.homeUrl!}"/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="offset-sm-2 col-sm-9">
+                        <button type="submit"  data-loading-text="正在提交..." class="btn btn-custom w-xs waves-effect waves-light">保存</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div id="config3" class="tab-pane fade">
+
+            <h4 style="text-align:left">阿里大鱼短信配置(<a href="https://dayu.aliyun.com" target="_blank">官网</a>) </h4>
+            <hr>
+            <form id="sms" action="${ctx}/sys/sysConfig/save" class="form-horizontal group-border-dashed">
+                <input type="hidden" name="id" value="1">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>accessKeyId:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input name="accessKeyId"  value="${config.accessKeyId!}" maxlength="64" class="form-control "/>
+                        <div class="text-muted"><small>此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>accessKeySecret:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input name="accessKeySecret" value="${config.accessKeySecret!}" maxlength="64" class="form-control "/>
+                        <div class="text-muted"><small>此处需要替换成开发者自己的AK(在阿里云访问控制台寻找)</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>短信签名:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input name="signature" value="${config.signature!}" maxlength="64" class="form-control "/>
+                        <div class="text-muted"><small>必填:短信签名-可在短信控制台中找到</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>短信模板:</label>
+                    <div class="col-sm-9 col-xs-8">
+                        <input  name="templateCode" value="${config.templateCode!}"  maxlength="64" class="form-control required"/>
+                        <div class="text-muted"><small>必填:短信模板编号-可在短信控制台中找到</small></div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="offset-sm-2 col-sm-9">
+                        <a href='#' onclick="testSms()"  class="btn btn-primary w-xs waves-effect waves-light">测试</a>
+                        <button type="submit" data-loading-text="正在提交..."  class="btn btn-custom w-xs waves-effect waves-light">保存</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div id="config4" class="tab-pane fade">
+
+                <h4 style="text-align:left">发件人账户</h4>
+                <hr>
+                <form id="email" action="${ctx}/sys/sysConfig/save" class="form-horizontal group-border-dashed">
+                    <input type="hidden" name="id" value="1">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>邮箱服务器地址:</label>
+                        <div class="col-sm-9 col-xs-8">
+                            <input id="smtp" name="smtp"  value="${config.smtp!}" maxlength="64" class="form-control "/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>邮箱服务器端口:</label>
+                        <div class="col-sm-9 col-xs-8">
+                            <input id="port" name="port" value="${config.port!}" maxlength="64" class="form-control "/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>系统邮箱地址:</label>
+                        <div class="col-sm-9 col-xs-8">
+                            <input id="mailName" name="mailName" value="${config.mailName!}" maxlength="64" class="form-control "/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-xs-3 control-label"><font color="red">*</font>系统邮箱密码:</label>
+                        <div class="col-sm-9 col-xs-8">
+                            <input type="password" id="mailPassword" name="mailPassword" value="${config.mailPassword!}" maxlength="64" class="form-control required"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-9">
+                            <a href='#' onclick="testEmail()"  class="btn btn-primary w-xs waves-effect waves-light">测试</a>
+                            <button type="submit" data-loading-text="正在提交..." class="btn btn-custom w-xs waves-effect waves-light">保存</button>
+                        </div>
+                    </div>
+                </form>
+
+        </div>
+	</div>
+<% } %>

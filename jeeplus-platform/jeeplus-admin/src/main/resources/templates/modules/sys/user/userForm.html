@@ -1,0 +1,112 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+	function save() {
+		var isValidate = jp.validateForm('#inputForm');//校验表单
+		if(!isValidate){
+			return false;
+		}else{
+			jp.loading();
+			jp.post("${ctx}/sys/user/save",$('#inputForm').serialize(),function(data){
+				if(data.success){
+					jp.getParent().refresh();
+					var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+					parent.layer.close(dialogIndex);
+					jp.success(data.msg)
+
+				}else{
+					jp.error(data.msg);
+				}
+			})
+		}
+
+	}
+	$(document).ready(function() {
+		$("#no").focus();
+		$("#inputForm").validate({
+			rules: {
+					loginName: {remote: "${ctx}/sys/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')}
+				},
+			messages: {
+					loginName: {remote: "用户登录名已存在"},
+					confirmNewPassword: {equalTo: "输入与上面相同的密码"}
+				}
+		});
+		
+	});
+
+	
+	</script>
+	<form id="inputForm" action="${ctx}/sys/user/save" method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${user.id!}">
+		<table class="table table-bordered">
+		   <tbody>
+		      <tr>
+		         <td class="width-15 active">	<label class="pull-right"><font color="red">*</font>头像：</label></td>
+		         <td class="width-35">
+					 <#fileUpload id="photo" name="photo" value="${user.photo!}" type="image" uploadPath="/photo" fileNumLimit="1" readonly="false"/>
+				  </td>
+		         <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>归属公司:</label></td>
+		         <td class="width-35">
+					 <#treeselect id="company" name="company.id" value="${user.company.id!}" labelName="company.name" labelValue="${user.company.name!}"
+						title="公司" url="/sys/office/treeData?type=1" allowClear="true" class="form-control required"/>
+				 </td>
+		      </tr>
+
+		      <tr>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>归属部门:</label></td>
+		         <td>
+					 <#treeselect id="office" name="office.id" value="${user.office.id!}" labelName="office.name" labelValue="${user.office.name!}"
+					 allowClear="true" title="部门" url="/sys/office/treeData?type=2" class="form-control required" notAllowSelectRoot="${true}"/>
+				 </td>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>工号:</label></td>
+		         <td><input name="no" type="text" value="${user.no!}" maxlength="50" class="form-control required"/></td>
+		      </tr>
+
+		      <tr>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>姓名:</label></td>
+		         <td><input name="name" type="text" value="${user.name!}" maxlength="50" class="form-control required"/></td>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>登录名:</label></td>
+		         <td><input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName!}">
+					 <input name="loginName" type="text" value="${user.loginName!}" maxlength="50" class="form-control required userName"/></td>
+		      </tr>
+
+
+		      <tr>
+		         <td class="active"><label class="pull-right"><% if(isEmpty(user.id)){ %><font color="red">*</font><% } %>密码:</label></td>
+		         <td><input id="newPassword" name="newPassword" type="password" value="" maxlength="50" minlength="3" class="form-control ${user.id!'' ==''? 'required':''}"/>
+					<% if(isNotEmpty(user.id)){ %><span class="text-muted"><small>若不修改密码，请留空。</small></span><% } %></td>
+		         <td class="active"><label class="pull-right"><% if(isEmpty(user.id)){ %><font color="red">*</font><% } %>确认密码:</label></td>
+		         <td><input id="confirmNewPassword" name="confirmNewPassword" type="password"  class="form-control ${user.id!'' ==''? 'required':''}" value="" maxlength="50" minlength="3" equalTo="#newPassword"/></td>
+		      </tr>
+
+		       <tr>
+		         <td class="active"><label class="pull-right">邮箱:</label></td>
+		         <td><input type="text" name="email" value="${user.email!}" maxlength="100" class="form-control email"/></td>
+		         <td class="active"><label class="pull-right">电话:</label></td>
+		         <td><input type="text" name="phone" value="${user.phone!}" maxlength="100" class="form-control"/></td>
+		      </tr>
+
+		      <tr>
+		         <td class="active"><label class="pull-right">手机:</label></td>
+		         <td><input name="mobile" type="text" value="${user.mobile!}" maxlength="100" class="form-control"/></td>
+		         <td class="active"><label class="pull-right">是否允许登录:</label></td>
+		         <td>
+					 <#select path="loginFlag" value="${user.loginFlag}" items="${fn.getDictList('yes_no')}" itemLabel="label" itemValue="value" class="form-control"/>
+				 </td>
+		      </tr>
+
+		      <tr>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>用户角色:</label></td>
+		         <td>
+		         	<#checkbox path="roleIdList" values="${user.roleIdList}" items="${allRoles}" itemLabel="name" itemValue="id" class="required"/>
+		         	<label id="roleIdList-error" class="error"></label>
+		         </td>
+		         <td class="active"><label class="pull-right">备注:</label></td>
+				  <td><textarea id="remarks" name="remarks" rows="3" maxlength="200" class="form-control">${user.remarks}</textarea></td>
+		      </tr>
+		      </tbody>
+		      </table>
+	</form>
+<% } %>

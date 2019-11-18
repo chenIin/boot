@@ -1,0 +1,76 @@
+<%
+layout("/include/_container.html", {title:"字典管理", parent:"系统设置"}){
+%>
+	<div class="row">
+		<div id="left" class="col-sm-12">
+				<!-- 搜索 -->
+				<div id="search-collapse" class="white-box collapse m-b-5">
+						<a class="jp-ti-close close" onclick="$('#search-collapse').fadeToggle()">
+							<i class="fa fa-times"></i>
+						</a>
+						<form id="searchForm"  class="form-inline" >
+							<div class="form-group m-b-10 m-r-10">
+									<label class="m-r-10" title="类型：">类型：</label>
+									<input id="type" name="type" class="form-control m-b"/>
+								</div>
+							<div class="form-group m-b-10 m-r-10">
+									<label class="m-r-10" title="描述">描述：</label>
+									<input id="description" name="description" class="form-control m-b"/>
+								</div>
+							<div class="form-group m-b-10 m-r-10">
+									<a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+									<a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+								</div>
+						</form>
+				</div>
+
+				<div class="white-box">
+				<!-- 工具栏 -->
+				<div id="toolbar">
+					<% if(shiro.hasPermission("sys:dict:add") ){ %>
+						<button id="add" class="btn btn-custom waves-effect w-xs waves-light"  onclick="add()"><i class="fa fa-plus"></i> 新建</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:dict:edit")) { %>
+						<button id="edit" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="edit()">
+							<i class="fa fa-edit"></i> 修改
+						</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:dict:del")) { %>
+						<button id="remove" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="del()">
+							<i class="fa fa-remove"></i> 删除
+						</button>
+					<% } %>
+				</div><!-- 工具栏结束 -->
+
+				<!-- 表格 -->
+				<table id="table"
+					   class="table-bordered"
+					   data-toolbar="#toolbar"
+					   data-id-field="id">
+				</table>
+				</div>
+
+		    </div>
+		<div  id="right" class="col-sm-6 p-l-0 hide">
+			<div class="card">
+				<div class="card-body">
+					<a class="jp-ti-close close" onclick="hideDictValuePanel()">
+						<i class="fa fa-times"></i>
+					</a>
+					<h5>键值列表，所属类型: <label class="text-custom" id="dictTypeLabel"></label><input type="hidden" id="dictTypeId"/></h5>
+				 <div id="dictValueToolbar">
+					<button id="dictValueButton" class="btn btn-custom btn-trans waves-effect waves-custom w-xs" title="添加键值"><i class="fa fa-plus-circle"></i> 添加键值</button>
+				</div>
+				 <!-- 表格 -->
+			    <table id="dictValueTable"
+					   class="table table-bordered"
+			           data-toolbar="#dictValueToolbar"
+			           data-id-field="id">
+			    </table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<% include("dictList.js"){} %>
+<% } %>

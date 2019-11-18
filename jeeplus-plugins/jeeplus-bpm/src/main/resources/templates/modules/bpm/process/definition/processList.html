@@ -1,0 +1,39 @@
+<%
+layout("/include/_container.html", {title:"流程管理列表", parent:"流程管理"}){
+%>
+<% include("processList.js"){} %>
+<!-- 搜索 -->
+<div id="search-collapse" class="collapse white-box" style="position:relative;margin-bottom: 5px">
+    <a class="jp-ti-close close"
+       onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+            <label class="m-r-10" title="流程分类：">流程分类：</label>
+            <#select path="category" items="${fn.getDictList('act_category')}" itemLabel="label" itemValue="value"
+            class="form-control w-lg "/>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+
+<div class="white-box">
+    <!-- 工具栏 -->
+    <div id="toolbar">
+        <% if(shiro.hasPermission("act:process:edit")){ %>
+        <button class="btn btn-custom  waves-effect w-xs" onclick="upload()">
+            <i class="fa fa-plus"></i> 上传流程文件
+        </button>
+        <% } %>
+    </div>
+
+    <!-- 表格 -->
+    <table id="processTable" data-toolbar="#toolbar"></table>
+
+</div>
+
+<% } %>

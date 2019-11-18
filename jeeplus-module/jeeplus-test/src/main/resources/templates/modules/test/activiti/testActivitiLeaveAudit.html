@@ -1,0 +1,134 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"请假申请"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+					jp.go("${ctx}/test/activiti/testActivitiLeave");
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			});
+
+
+            $("#agree").click(function () {
+                jp.prompt("同意, 审批意见", function (message) {
+                    jp.post("${ctx}/test/activiti/testActivitiLeave/audit",
+                        {
+                            "act.taskId":"${testActivitiLeave.act.taskId}",
+                            "act.taskName":"${testActivitiLeave.act.taskName}",
+                            "act.taskDefKey":"${testActivitiLeave.act.taskDefKey}",
+                            "act.procInsId":"${testActivitiLeave.act.procInsId}",
+                            "act.procDefId":"${testActivitiLeave.act.procDefId}",
+                            "act.flag":"yes",
+                            "act.comment":message
+
+                        },
+                        function (data) {
+								if(data.success){
+									jp.success(data.msg);
+									jp.go("${ctx}/act/task/todo")
+								}
+                        })
+                })
+            })
+
+
+            $("#reject").click(function () {
+                jp.prompt("驳回, 审批意见", function (message) {
+                    jp.post("${ctx}/test/activiti/testActivitiLeave/audit",
+                        {
+                            "act.taskId":"${testActivitiLeave.act.taskId}",
+                            "act.taskName":"${testActivitiLeave.act.taskName}",
+                            "act.taskDefKey":"${testActivitiLeave.act.taskDefKey}",
+                            "act.procInsId":"${testActivitiLeave.act.procInsId}",
+                            "act.procDefId":"${testActivitiLeave.act.procDefId}",
+                            "act.flag":"no",
+                            "act.comment":message
+
+                        },
+                        function (data) {
+
+                            if(data.success){
+								jp.success(data.msg);
+								jp.go("${ctx}/act/task/todo")
+                            }
+
+
+                        })
+                })
+            })
+
+
+	        $('#startTime').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+	        $('#endTime').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+		});
+	</script>
+<div class="white-box">
+	
+		<div class="form-group text-center">
+			<h3>${testActivitiLeave.act.taskName}</h3>
+		</div>
+		<form id="inputForm" action="${ctx}/test/activiti/testActivitiLeave/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${testActivitiLeave.id!}"/>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>请假类型：</label>
+					<div class="col-sm-9">
+			 		${fn.getDictLabel(testActivitiLeave.leaveType!, 'oa_leave_type', '')}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>请假开始时间：</label>
+					<div class="col-sm-9">
+					${fn.formatDate(testActivitiLeave.startTime!, 'yyyy-MM-dd HH:mm:ss')}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>请假结束时间：</label>
+					<div class="col-sm-9">
+					${fn.formatDate(testActivitiLeave.endTime!, 'yyyy-MM-dd HH:mm:ss')}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>报销事由：</label>
+					<div class="col-sm-9">
+					${testActivitiLeave.reason!}
+					</div>
+				</div>
+			<hr>
+		</form>
+
+			<div class="form-group row">
+            <div class="offset-sm-3 col-sm-9 m-t-15">
+			<% if(testActivitiLeave.act.taskDefKey! != '' && !testActivitiLeave.act.finishTask! && testActivitiLeave.act.isNextGatewaty!){ %>
+                <button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit">同意</button>
+                <button id="reject" class="btn btn-danger waves-effect waves-light btn-md m-r-5" type="submit">驳回</button>
+			<% } %>
+			<% if(testActivitiLeave.act.taskDefKey! != '' && !testActivitiLeave.act.finishTask! && !testActivitiLeave.act.isNextGatewaty!){ %>
+				<button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit">办理</button>
+			<% } %>
+                <a href="javascript:window.history.go(-1)" class="btn btn-danger waves-effect waves-light btn-md">
+                     <i class="fa fa fa-arrow-left"></i> 返回
+                </a>
+			</div>
+			</div>
+
+			<%if(isNotEmpty(testActivitiLeave.id!)){ %>
+				<#flowChart procInsId="${testActivitiLeave.act.procInsId!}"/>
+				<#histoicFlow procInsId="${testActivitiLeave.act.procInsId!}" />
+			<% } %>
+
+		</div>
+<% } %>

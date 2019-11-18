@@ -1,0 +1,53 @@
+<%
+layout("/include/_container.html", {title:"通知公告", parent:"我的面板"}){
+%>
+
+<!-- 搜索 -->
+<div id="search-collapse" class="white-box collapse m-b-5">
+    <a class="jp-ti-close close"
+       onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+            <label class="m-r-10" title="标题：">标题：</label>
+            <input name="title" value="${oaNotify.title!}" maxlength="200" class="form-control"/>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <label class="m-r-10" title="类型：">类型：</label>
+            <#select path="type" value="${oaNotify.type!}" class="w-lg form-control" items="${fn.getDictList('oa_notify_type')}" itemLabel="label"
+            itemValue="value" />
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+
+<div class="white-box">
+    <% if(!isSelf){ %>
+    <!-- 工具栏 -->
+    <div id="toolbar">
+        <% if(shiro.hasPermission("oa:oaNotify:add") ){ %>
+        <a id="add" class="btn btn-custom waves-effect w-xs waves-light" href="${ctx}/oa/oaNotify/form" title="通知">
+            <i class="fa fa-plus"></i> 新建
+        </a>
+        <% } %>
+        <% if(shiro.hasPermission("oa:oaNotify:edit") ){ %>
+        <button id="edit" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="edit()">
+            <i class="fa fa-edit"></i> 修改
+        </button>
+        <% } %>
+        <% if(shiro.hasPermission("oa:oaNotify:del") ){ %>
+        <button id="remove" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="deleteAll()">
+            <i class="fa fa-remove"></i> 删除
+        </button>
+        <% } %>
+    </div>
+    <% } %>
+    <!-- 表格 -->
+    <table id="table" data-toolbar="#toolbar"></table>
+</div>
+<% include("oaNotifyList.js"){} %>
+<% } %>

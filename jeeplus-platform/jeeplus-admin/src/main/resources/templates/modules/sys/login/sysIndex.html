@@ -1,0 +1,46 @@
+<%
+layout("/include/_layout.html", {title:"首页", parent:"工作台"}){
+%>
+
+
+
+<% if(fn.getCookie(request,'content-tab') != '2'){ %>
+
+            <div class="content-page " style="margin-top: 60px; height:calc(100% - 60px)">
+                    <div class="content-tabs">
+                        <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-angle-left"></i>
+                        </button>
+                        <nav class="page-tabs J_menuTabs">
+                            <div class="page-tabs-content" style="margin-left: 0px;">
+                                <a href="javascript:;" class="active J_menuTab" data-id="${ctx}/home">首页</a>
+                            </div>
+                        </nav>
+                        <button class="roll-nav roll-right J_tabRight"><i class="fa fa-angle-right"></i>
+                        </button>
+                    </div>
+                <div class="J_mainContent"  style="height:calc(100% - 46px)">
+                    <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="${ctx}${fn.getHomeUrl()}" frameborder="0" data-id="${ctx}${fn.getHomeUrl()}"></iframe>
+                </div>
+        </div>
+
+<% } else { %>
+
+<style>
+    .topbar {
+        -webkit-box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.12), 0 2px 20px 0 rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 1px 0 rgba(0, 0, 0, 0.12), 0 2px 20px 0 rgba(0, 0, 0, 0.08);
+    }
+</style>
+
+<div class="content-page " style="margin-top: 60px; height:calc(100% - 60px)">
+
+    <div class="J_mainContent"  style="height:100%">
+        <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="${ctx}${fn.getHomeUrl()}" frameborder="0" data-id="${ctx}${fn.getHomeUrl()}"></iframe>
+    </div> <!-- container-fluid -->
+</div>
+<% } %>
+
+
+
+
+<% } %>

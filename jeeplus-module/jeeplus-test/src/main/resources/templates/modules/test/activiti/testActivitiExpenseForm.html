@@ -1,0 +1,79 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"报销申请"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+					jp.go("${ctx}"+ data.body.targetUrl);
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			});
+
+		});
+	</script>
+	<div class="white-box">
+		<form id="inputForm"  action="${ctx}/test/activiti/testActivitiExpense/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${testActivitiExpense.id!}"/>
+		<input type="hidden" name="act.taskId" value="${testActivitiExpense.act.taskId!}"/>
+		<input type="hidden" name="act.taskName" value="${testActivitiExpense.act.taskName!}"/>
+		<input type="hidden" name="act.taskDefKey" value="${testActivitiExpense.act.taskDefKey!}"/>
+		<input type="hidden" name="act.procInsId" value="${testActivitiExpense.act.procInsId!}"/>
+		<input type="hidden" name="act.procDefId" value="${testActivitiExpense.act.procDefId!}"/>
+		<input type="hidden"id="flag"  name="act.flag" value="${testActivitiExpense.act.flag!}"/>
+		<div class="form-group text-center">
+			<h3> 报销申请</h3>
+		</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>员工姓名：</label>
+					<div class="col-sm-9">
+					<#userselect id="user" name="user.id" value="${testActivitiExpense.user.id!}" labelName="user.name" labelValue="${testActivitiExpense.user.name!}"
+						    class="form-control required"  allowClear="true"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>报销费用：</label>
+					<div class="col-sm-9">
+					<input name="cost" value="${testActivitiExpense.cost!}"    class="form-control required isFloatGtZero"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>归属部门：</label>
+					<div class="col-sm-9">
+					<#treeselect id="office" name="office.id" value="${testActivitiExpense.office.id!}" labelName="office.name" labelValue="${testActivitiExpense.office.name!}"
+						title="部门" url="/sys/office/treeData?type=2" class="form-control required" allowClear="true" notAllowSelectParent="true"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>报销事由：</label>
+					<div class="col-sm-9">
+					<textarea name="reason" rows="4"    class="form-control required">${testActivitiExpense.reason!}</textarea>
+					</div>
+				</div>
+		<div class="form-group row">
+		<div class="offset-sm-3 col-sm-9 m-t-15">
+		<% if(testActivitiExpense.act.taskDefKey! != '' && !testActivitiExpense.act.finishTask! && testActivitiExpense.act.isNextGatewaty!){ %>
+            <button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit"  onclick="$('#flag').val('yes')">重新提交</button>
+			<button id="reject" class="btn btn-danger waves-effect waves-light btn-md m-r-5" type="submit" onclick="$('#flag').val('no')">销毁申请</button>
+
+		<% } %>
+		<% if(testActivitiExpense.act.startTask!){ %>
+            <button class="btn btn-custom waves-effect waves-light btn-md m-r-5" data-loading-text="正在提交...">提 交</button>
+		<% } %>
+		 <a href="javascript:window.history.go(-1)" class="btn btn-danger waves-effect waves-light btn-md">
+             <i class="fa fa fa-arrow-left"></i> 返回
+         </a>
+        </div>
+		</div>
+		</form>
+			<%if(isNotEmpty(testActivitiExpense.id!)){ %>
+			<#flowChart procInsId="${testActivitiExpense.act.procInsId}"/>
+			<#histoicFlow procInsId="${testActivitiExpense.act.procInsId}" />
+		<% } %>
+		</div>
+<% } %>

@@ -1,0 +1,175 @@
+<script id="notifyTpl" type="text/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+       <a href="" class="dropdown-toggle waves-effect waves-light jp-bell" data-toggle="dropdown" aria-expanded="true">
+           <i class="zmdi zmdi-notifications-none"></i>
+           <div class="noti-dot">
+               <span class="dot"></span>
+               <span class="pulse"></span>
+           </div>
+        </a>
+        <ul class="dropdown-menu media-list dropdown-menu-right list-no-border user-list">
+            <li class="dropdown-header">你有{{d.total}} 条未读通知</li>
+
+                {{# d.rows.forEach(function (notify){  }}
+                <li class="list-group-item">
+                <a href="javascript:jp.openTab('${ctx}/oa/oaNotify/form?isSelf=true&id={{notify.id}}','我的通知',false)"  class="user-list-item">
+                    <div class="avatar">
+                        <img src="{{notify.createBy.photo}}" alt="{{notify.createBy.name}}" >
+                    </div>
+                <div class="user-desc">
+                <span class="name">{{notify.createBy.name}}</span>
+                <span class="desc">{{notify.title}}</span>
+                <span class="time">{{notify.createDate}}</span>
+                </div>
+                </a>
+                 </li>
+                {{# }) }}
+
+            <li style="text-align: center">
+                <a class="text-center"  href="javascript:jp.openTab('${ctx}/oa/oaNotify/self','我的通知',false)"> <strong>查看全部通知</strong> <i class="fa fa-angle-right"></i> </a>
+            </li>
+        </ul>
+
+</script>
+
+<script id="mailTpl" type="text/html">
+
+    <a href="" class="dropdown-toggle waves-effect waves-light jp-bell" data-toggle="dropdown" aria-expanded="true">
+        <i class="zmdi zmdi-email"></i>
+        <div class="noti-dot">
+            <span class="dot"></span>
+            <span class="pulse"></span>
+        </div>
+    </a>
+    <ul class="dropdown-menu media-list dropdown-menu-right list-no-border user-list">
+        <li class="dropdown-header">你有{{d.total}} 条未读站内信</li>
+            {{# d.rows.forEach(function (mail){  }}
+        <li class="list-group-item">
+            <a  href="javascript:jp.openTab('${ctx}/mailBox/detail?id={{mail.id}}','查看邮件',false)"  class="user-list-item">
+                <div class="avatar">
+                    <img src="{{mail.sender.photo}}" alt="{{mail.sender.name}}">
+                 </div>
+           <div class="user-desc">
+             <span class="name"{{mail.sender.name}}</span>
+            <span class="desc">{{mail.mail.title}}</span>
+            <span class="time">{{mail.sendtime}}</span>
+            </div>
+            </a>
+        </li>
+            {{# }) }}
+        <li style="text-align: center">
+            <a class="text-center"  href="javascript:jp.openTab('${ctx}/mailBox/list','收件箱',false)"> <strong>查看收件箱</strong> <i class="fa fa-angle-right"></i> </a>
+        </li>
+    </ul>
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        jp.post("${ctx}/oa/oaNotify/self/data",{isSelf:true,pageSize:5,pageNo:1, readFlag: 0},function (data) {
+            var notifyTpl = $("#notifyTpl").html()
+                ,view = document.getElementById('notifyView');
+            laytpl(notifyTpl).render(data, function(html){
+                view.innerHTML = html;
+            });
+        })
+
+        jp.post("${ctx}/mailBox/data",{readstatus:0},function (data) {
+            var mailTpl = $("#mailTpl").html()
+                ,view = document.getElementById('mailView');
+            laytpl(mailTpl).render(data, function(html){
+                view.innerHTML = html;
+            });
+        })
+
+        $("#o1 li a").click(function () {
+            $("#o1 li a").removeClass("active")
+        })
+
+    })
+</script>
+<style>
+    @media (max-width: 767px){
+        #o1 {
+            display: none;
+        }
+    }
+
+</style>
+
+<div class="topbar">
+
+    <!-- LOGO -->
+    <div class="topbar-left">
+        <div class="text-center">
+            <a href="${ctx}" class="logo">
+                <i class="zmdi zmdi-toys icon-c-logo"></i><span>${fn.getProductName()}</span>
+            </a>
+        </div>
+    </div>
+
+
+
+    <!-- Button mobile view to collapse sidebar menu -->
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="">
+                <div class="float-left">
+                    <button class="button-menu-mobile open-left waves-effect waves-light">
+                        <i class="zmdi zmdi-menu"></i>
+                    </button>
+                </div>
+
+                <% if(fn.getCookie(request,'layout') == null && fn.getDefaultLayout() == 'horizontal' || fn.getCookie(request,'layout') == 'horizontal'){ %>
+                        <ul id="o1"  class="nav navbar-toolbar nav-tabs  navbar-left"  style="width: calc( 100% - 680px); height: 60px" role="tablist">
+                            <#jpMenu  menu="${fn.getTopMenu()}" position="top" ></#jpMenu>
+                        </ul>
+                <% } %>
+
+
+
+                 <form role="search" class="navbar-left app-search">
+                    <input type="text" placeholder="搜索..." class="form-control">
+                    <a href=""><i class="fa fa-search"></i></a>
+                </form>
+
+                <ul class="nav navbar-right float-right">
+                    <li class="dropdown user-box list-inline-item bell-box" id="notifyView" >
+
+                    </li>
+                    <li class="dropdown user-box list-inline-item bell-box" id="mailView" >
+
+                    </li>
+
+                    <li class="dropdown user-box list-inline-item">
+                        <a href="" class="dropdown-toggle waves-effect waves-light profile" data-toggle="dropdown" aria-expanded="true">
+                            <img src="${fn.getUser().photo}" alt="user-img" class="rounded-circle user-img">
+                            <div class="user-status away"><i class="zmdi zmdi-dot-circle"></i></div>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li> <a href="${ctx}/sys/user/info" class="J_menuItem dropdown-item"><i class="ti-user m-r-5"></i> 个人资料</a>
+                            <li><a href="${ctx}/logout" class="dropdown-item"><i class="ti-power-off m-r-5"></i> 安全退出</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="list-inline-item">
+                        <div class="notification-box">
+                            <ul class="list-inline m-b-0">
+                                <li>
+                                    <a href="javascript:void(0);" class="right-bar-toggle">
+                                        <i class="fa fa-ellipsis-v"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </li>
+
+                </ul>
+
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </div>
+</div>

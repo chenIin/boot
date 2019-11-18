@@ -1,0 +1,208 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"薪酬调整申请"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+					jp.go("${ctx}/test/activiti/testActivitiAudit");
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			});
+
+
+            $("#agree").click(function () {
+                jp.prompt("同意, 审批意见", function (message) {
+                    jp.post("${ctx}/test/activiti/testActivitiAudit/audit",
+                        {
+                            "act.taskId":"${testActivitiAudit.act.taskId}",
+                            "act.taskName":"${testActivitiAudit.act.taskName}",
+                            "act.taskDefKey":"${testActivitiAudit.act.taskDefKey}",
+                            "act.procInsId":"${testActivitiAudit.act.procInsId}",
+                            "act.procDefId":"${testActivitiAudit.act.procDefId}",
+                            "act.flag":"yes",
+                            "act.comment":message
+
+                        },
+                        function (data) {
+								if(data.success){
+									jp.success(data.msg);
+									jp.go("${ctx}/act/task/todo")
+								}
+                        })
+                })
+            })
+
+
+            $("#reject").click(function () {
+                jp.prompt("驳回, 审批意见", function (message) {
+                    jp.post("${ctx}/test/activiti/testActivitiAudit/audit",
+                        {
+                            "act.taskId":"${testActivitiAudit.act.taskId}",
+                            "act.taskName":"${testActivitiAudit.act.taskName}",
+                            "act.taskDefKey":"${testActivitiAudit.act.taskDefKey}",
+                            "act.procInsId":"${testActivitiAudit.act.procInsId}",
+                            "act.procDefId":"${testActivitiAudit.act.procDefId}",
+                            "act.flag":"no",
+                            "act.comment":message
+
+                        },
+                        function (data) {
+
+                            if(data.success){
+								jp.success(data.msg);
+								jp.go("${ctx}/act/task/todo")
+                            }
+
+
+                        })
+                })
+            })
+
+
+	        $('#exeDate').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+		});
+	</script>
+<div class="white-box">
+	
+		<div class="form-group text-center">
+			<h3>${testActivitiAudit.act.taskName}</h3>
+		</div>
+		<form id="inputForm" action="${ctx}/test/activiti/testActivitiAudit/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${testActivitiAudit.id!}"/>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>变动用户：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.user.name!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>归属部门：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.office.name!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">岗位：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.post!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">性别：</label>
+					<div class="col-sm-9">
+			 		${fn.getDictLabel(testActivitiAudit.sex!, 'sex', '')}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">学历：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.edu!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>调整原因：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.content!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">现行标准 薪酬档级：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.olda!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>现行标准 月工资额：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.oldb!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">现行标准 年薪总额：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.oldc!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">调整后标准 薪酬档级：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.newa!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>调整后标准 月工资额：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.newb!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">调整后标准 年薪总额：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.newc!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>月增资：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.addNum!}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right"><font color="red">*</font>执行时间：</label>
+					<div class="col-sm-9">
+					${fn.formatDate(testActivitiAudit.exeDate!, 'yyyy-MM-dd HH:mm:ss')}
+					</div>
+				</div>
+			<hr>
+				<div class="form-group row">
+					<label class="col-sm-3 text-right">备注信息：</label>
+					<div class="col-sm-9">
+					${testActivitiAudit.remarks!}
+					</div>
+				</div>
+			<hr>
+		</form>
+
+			<div class="form-group row">
+            <div class="offset-sm-3 col-sm-9 m-t-15">
+			<% if(testActivitiAudit.act.taskDefKey! != '' && !testActivitiAudit.act.finishTask! && testActivitiAudit.act.isNextGatewaty!){ %>
+                <button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit">同意</button>
+                <button id="reject" class="btn btn-danger waves-effect waves-light btn-md m-r-5" type="submit">驳回</button>
+			<% } %>
+			<% if(testActivitiAudit.act.taskDefKey! != '' && !testActivitiAudit.act.finishTask! && !testActivitiAudit.act.isNextGatewaty!){ %>
+				<button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit">办理</button>
+			<% } %>
+                <a href="javascript:window.history.go(-1)" class="btn btn-danger waves-effect waves-light btn-md">
+                     <i class="fa fa fa-arrow-left"></i> 返回
+                </a>
+			</div>
+			</div>
+
+			<%if(isNotEmpty(testActivitiAudit.id!)){ %>
+				<#flowChart procInsId="${testActivitiAudit.act.procInsId!}"/>
+				<#histoicFlow procInsId="${testActivitiAudit.act.procInsId!}" />
+			<% } %>
+
+		</div>
+<% } %>

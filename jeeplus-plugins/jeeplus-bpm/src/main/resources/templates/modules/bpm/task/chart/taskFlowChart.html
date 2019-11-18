@@ -1,0 +1,46 @@
+
+<div class="card card-custom card-border" style="margin-bottom: 24px;">
+    <div class="card-heading">
+        <h3 class="card-title text-custom m-0">流程进度</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <% for(var act in histoicFlowList){ %>
+            <% if(act.histIns.endTime !=null){ %>
+            <div class="align-middle text-primary m-b-10">
+              <span class="fa-stack fa-lg">
+                <i class="fa fa-circle-thin fa-stack-2x"></i>
+                <span class="fa fa-stack-1x fa-check"></span>
+              </span>
+
+                <div class="d-inline-block">
+                    <p class="mb-1">${act.histIns.activityName}</p>
+                    <p class="position-absolute text-muted">${act.assigneeName}</p>
+                </div>
+            </div>
+            <% if(actLP.index != actLP.size){ %>
+            <span class="col border border-primary mx-3 my-auto "></span>
+            <% } %>
+            <% }else{ %>
+            <div class="align-middle text-primary m-b-10">
+                  <span class="fa-stack fa-lg">
+                    <i class="fa fa-circle-thin fa-stack-2x"></i>
+                    <span class="fa  fa-stack-1x  fa-spin fa-spinner"></span>
+                  </span>
+                <div class="d-inline-block">
+                    <p class="mb-1"><strong>${act.histIns.activityName}</strong></p>
+                    <p class="position-absolute text-muted"> ${act.assigneeName}</p>
+                </div>
+            </div>
+            <% if(actLP.index != actLP.size){ %>
+            <span class="col border border-primary mx-3 my-auto"></span>
+            <% } %>
+            <% } %>
+            <% }%>
+
+
+        </div>
+    </div>
+</div>
+
+

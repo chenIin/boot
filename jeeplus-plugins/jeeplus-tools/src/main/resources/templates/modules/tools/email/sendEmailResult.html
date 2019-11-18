@@ -1,0 +1,26 @@
+<%
+layout("/include/_container.html", {title:"外部邮件", parent:"常用工具"}){
+%>
+
+
+<div class="wrapper-page">
+
+    <div class="m-t-30 card card-body">
+        <div class="text-center">
+            <h4 class="text-uppercase font-bold">${result!}</h4>
+        </div>
+        <div class="p-2 text-center">
+            <i class="zmdi zmdi-email-open text-success" style="font-size: 48px;"></i>
+        </div>
+
+    </div>
+    <!-- end card-box -->
+
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <p class="text-muted"><a class="btn-sm btn-custom btn-sm" href="${ctx}/tools/email" class="text-primary m-l-5">返回</a></p>
+        </div>
+    </div>
+
+</div>
+<%  } %>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-module/jeeplus-test" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-platform/jeeplus-admin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-platform/jeeplus-core" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/ddlutils-trunk" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-bpm" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-calendar" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-dashboard" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-datasource" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-echarts" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-gencode" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-layim" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-mail" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-monitor" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-oa" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-quartz" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-tools" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-plugins/jeeplus-ureport" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jeeplus-web" charset="UTF-8" />
+  </component>
+</project>

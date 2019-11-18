@@ -1,0 +1,56 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+					});
+
+		function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+			}else{
+                var index = jp.loading();
+                jp.post("${ctx}/test/pic/testPic/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.toastr_success(data.msg)
+
+                    }else{
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.close(index);
+                })
+			}
+
+        }
+	</script>
+<form id="inputForm"  method="post"  class="form-horizontal p-15">
+    <input type="hidden" name="id" value="${testPic.id!}"/>
+    <table class="table table-bordered">
+       <tbody>
+            <tr>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>标题：</label></td>
+                <td class="width-35">
+                    <input name="title" value="${testPic.title!}"    class="form-control required"/>
+            </td>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>图片路径：</label></td>
+                <td class="width-35">
+                    <#fileUpload id="pic" name="pic"  value="${testPic.pic}" type="file" class="form-control required" uploadPath="/test/pic/testPic"/>
+            </td>
+            </tr>
+            <tr>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>备注信息：</label></td>
+                <td class="width-35">
+                    <textarea name="remarks" rows="4"    class="form-control required">${testPic.remarks!}</textarea>
+            </td>
+                <td class="width-15 active"></td>
+                <td class="width-35" ></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<% } %>

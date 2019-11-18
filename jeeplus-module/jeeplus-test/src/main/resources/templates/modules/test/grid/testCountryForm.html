@@ -1,0 +1,59 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+					});
+
+		function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+			}else{
+                var index = jp.loading();
+                jp.post("${ctx}/test/grid/testCountry/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.toastr_success(data.msg)
+
+                    }else{
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.close(index);
+                })
+			}
+
+        }
+	</script>
+<form id="inputForm"  method="post"  class="form-horizontal p-15">
+    <input type="hidden" name="id" value="${testCountry.id!}"/>
+    <table class="table table-bordered">
+       <tbody>
+            <tr>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>国名：</label></td>
+                <td class="width-35">
+                    <input name="name" value="${testCountry.name!}"    class="form-control required"/>
+            </td>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>人口：</label></td>
+                <td class="width-35">
+                    <input name="sum" value="${testCountry.sum!}"    class="form-control required"/>
+            </td>
+            </tr>
+            <tr>
+                <td class="width-15 active"><label class="pull-right"><font color="red">*</font>所属洲：</label></td>
+                <td class="width-35">
+                    <#gridselect url="${ctx}/test/grid/testContinent/data" id="continent" name="continent.id" value="${testCountry.continent.id!}" labelName="continent.name" labelValue="${testCountry.continent.name!}"
+                         title="选择所属洲" class="form-control required" fieldLabels="洲名|备注" fieldKeys="name|remarks" searchLabels="洲名|备注" searchKeys="name|remarks" />
+            </td>
+                <td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+                <td class="width-35">
+                    <textarea name="remarks" rows="4"    class="form-control ">${testCountry.remarks!}</textarea>
+            </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+<% } %>

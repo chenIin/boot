@@ -1,0 +1,79 @@
+<%
+    layout("/include/_container.html", {title:"接口测试", parent:"常用工具"}){
+%>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            jp.ajaxForm("#inputForm", function (data) {
+                if (data.success) {
+                    jp.toastr_success(data.msg);
+                    jp.unblock("#inputForm",0);
+                    jp.go("${ctx}/tools/testInterface");
+                } else {
+                    jp.toastr_error(data.msg);
+                }
+            });
+        });
+    </script>
+
+<div class="white-box">
+    <form id="inputForm" action="${ctx}/tools/testInterface/save"
+               method="post" class="form-horizontal">
+        <input type="hidden" name="id" value="${testInterface.id!}">
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><font color="red">*</font> 接口名称：</label>
+            <div class="col-sm-10">
+                <input name="name" class="form-control required " value="${testInterface.name!}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><font color="red">*</font> 接口类型：</label>
+            <div class="col-sm-10">
+                <#select path="type" value="${testInterface.type!}" items="${fn.getDictList('interface_type')}" itemLabel="label" itemValue="value" class="form-control required"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label"><font color="red">*</font> 请求URL：</label>
+            <div class="col-sm-10">
+                <input name="url" class="form-control required" value="${testInterface.url!}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">请求body：</label>
+            <div class="col-sm-10">
+                <input name="body" class="form-control " value="${testInterface.body!}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">成功时返回消息：</label>
+            <div class="col-sm-10">
+                <input name="successmsg" class="form-control " value="${testInterface.successmsg!}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">失败时返回消息：</label>
+            <div class="col-sm-10">
+                <input name="errormsg" class="form-control " value="${testInterface.errormsg!}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">备注：</label>
+            <div class="col-sm-10">
+                <textarea name="remarks" class="form-control">${testInterface.remarks!}</textarea>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <% if(shiro.hasPermission("oa:oaNotify:edit") ){ %>
+            <button type="submit"  class="jp-btn jp-btn-primary " data-loading-text="正在提交...">
+                <i class="fa fa-save"></i> 提交
+            </button>
+            <% } %>
+            <a href="${ctx}/tools/testInterface" class="jp-btn jp-btn-danger" >
+                <i class="fa fa fa-arrow-left"></i> 返回
+            </a>
+        </div>
+
+    </form>
+</div>
+
+<% } %>

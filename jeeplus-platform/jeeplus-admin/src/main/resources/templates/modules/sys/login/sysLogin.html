@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="A fully featured java project which can be used to build CRM, CMS, etc.">
+	<meta name="author" content="jeeplus">
+
+	<link rel="shortcut icon" href="${ctxStatic}/common/images/favicon.ico">
+
+	<title>${fn.getProductName()}</title>
+	<link href="${ctxStatic}/plugins/bootstrap4/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="${ctxStatic}/plugins/fonts-icon/css/icons.css" rel="stylesheet" type="text/css" />
+	<link href="${ctxStatic}/common/css/${fn.getCookie(request,'theme') == null?fn.getDefaultTheme():fn.getCookie(request,'theme')}.css" id="theme" rel="stylesheet" type="text/css" />
+
+
+</head>
+
+
+<body>
+
+<div class="text-center logo-alt-box">
+	<a href="#" class="logo"><span class="text-inverse ">Jee<span class="text-custom">Plus</span></span></a>
+	<h5 class="text-muted m-t-0">最简单的springboot快速开发平台，因为简单，所以更快</h5>
+
+</div>
+
+<div class="wrapper-page">
+
+	<div class="m-t-30 card card-body">
+		<div class="text-center">
+			<#message content="${message!}" showType="1"/>
+			<h4 class="text-uppercase font-bold">登录</h4>
+		</div>
+		<div class="p-2">
+			<form class="form-horizontal m-t-10" method="post" action="${ctx}/login">
+
+				<div class="form-group ">
+					<div class="col-12">
+						<input class="form-control"  id="username" name="username" value="admin"  type="text" required="" placeholder="用户名">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-12">
+						<input class="form-control" type="password"  name="password" value="admin" required="" placeholder="密码">
+					</div>
+				</div>
+
+
+				<% if(isValidateCodeLogin!false){ %>
+				<div class="form-group">
+					<div class="col-12">
+					<div class="row">
+						<div class="col-4">
+							<input type="text" id="validateCode" name="validateCode" maxlength="5" class="form-control input-sm required" />
+						</div>
+						<div class="col-4">
+							<img  class="validateImg" src="${ctxPath}/servlet/validateCodeServlet" onclick="$('.validateImg').attr('src','${ctxPath}/servlet/validateCodeServlet?'+new Date().getTime());"  />
+						</div>
+					</div>
+					</div>
+				</div>
+				<% } %>
+				<div class="form-group ">
+					<div class="col-12">
+						<div class="checkbox checkbox-custom">
+							<input id="remember_checkbox" name="rememberMe" ${rememberMe!false ? 'checked' : ''} type="checkbox">
+							<label for="remember_checkbox">
+								记住我
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group text-center m-t-30">
+					<div class="col-12">
+						<button class="btn btn-custom btn-bordred btn-block waves-effect waves-light text-uppercase" type="submit">登录</button>
+					</div>
+				</div>
+
+				<div class="form-group m-t-30 m-b-0">
+					<div class="col-sm-12">
+						<a href="#" class="text-muted"><i class="fa fa-lock m-r-5"></i> 忘记密码?</a>
+					</div>
+				</div>
+
+
+				<div class="form-group m-t-20 m-b-0">
+					<div class="col-sm-12 text-center"><h4>社交账号登录</h4></div>
+				</div>
+
+				<div class="form-group m-b-0 text-center">
+					<div class="col-sm-12">
+						<button type="button" class="btn btn-facebook waves-effect waves-light m-t-20"><i
+								class="fa fa-qq m-r-5"></i> QQ
+						</button>
+						<button type="button" class="btn btn-twitter waves-effect waves-light m-t-20"><i
+								class="fa fa-weixin m-r-5"></i> 微信
+						</button>
+						<button type="button" class="btn btn-googleplus waves-effect waves-light m-t-20"><i
+								class="fa fa-weibo m-r-5"></i> 微博
+						</button>
+					</div>
+				</div>
+
+			</form>
+
+		</div>
+	</div>
+	<!-- end card-box -->
+
+	<div class="row">
+		<div class="col-sm-12 text-center">
+			<p class="text-muted">版权所有: <b>www.jeeplus.org</b></a></p>
+		</div>
+	</div>
+
+</div>
+<!-- end wrapper page -->
+
+
+
+
+<script>
+	if(self.frameElement && self.frameElement.tagName == "IFRAME"){
+		alert('未登录或登录超时。请重新登录，谢谢！');
+		top.location = "${ctx}";
+	}
+	function kickout(){
+		var href=location.href;
+		if(href.indexOf("kickout")>0){
+			alert("您的账号在另一台设备上登录,如非本人操作，请立即修改密码！");
+		}
+
+		if(href.indexOf("forbid")>0){
+			alert("账号已在其它地方登录，你被禁止登录！");
+		}
+
+	}
+	window.onload=kickout();
+</script>
+
+<!-- jQuery  -->
+<script src="${ctxStatic}/plugins/jquery/jquery.min.js"></script>
+<script src="${ctxStatic}/plugins/bootstrap4/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

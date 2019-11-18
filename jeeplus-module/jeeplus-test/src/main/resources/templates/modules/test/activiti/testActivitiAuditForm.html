@@ -1,0 +1,153 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"薪酬调整申请"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+					jp.go("${ctx}"+ data.body.targetUrl);
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			});
+
+	        $('#exeDate').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+		});
+	</script>
+	<div class="white-box">
+		<form id="inputForm"  action="${ctx}/test/activiti/testActivitiAudit/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${testActivitiAudit.id!}"/>
+		<input type="hidden" name="act.taskId" value="${testActivitiAudit.act.taskId!}"/>
+		<input type="hidden" name="act.taskName" value="${testActivitiAudit.act.taskName!}"/>
+		<input type="hidden" name="act.taskDefKey" value="${testActivitiAudit.act.taskDefKey!}"/>
+		<input type="hidden" name="act.procInsId" value="${testActivitiAudit.act.procInsId!}"/>
+		<input type="hidden" name="act.procDefId" value="${testActivitiAudit.act.procDefId!}"/>
+		<input type="hidden"id="flag"  name="act.flag" value="${testActivitiAudit.act.flag!}"/>
+		<div class="form-group text-center">
+			<h3> 薪酬调整申请</h3>
+		</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>变动用户：</label>
+					<div class="col-sm-9">
+					<#userselect id="user" name="user.id" value="${testActivitiAudit.user.id!}" labelName="user.name" labelValue="${testActivitiAudit.user.name!}"
+						    class="form-control required"  allowClear="true"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>归属部门：</label>
+					<div class="col-sm-9">
+					<#treeselect id="office" name="office.id" value="${testActivitiAudit.office.id!}" labelName="office.name" labelValue="${testActivitiAudit.office.name!}"
+						title="部门" url="/sys/office/treeData?type=2" class="form-control required" allowClear="true" notAllowSelectParent="true"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">岗位：</label>
+					<div class="col-sm-9">
+					<input name="post" value="${testActivitiAudit.post!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">性别：</label>
+					<div class="col-sm-9">
+					<#radiobuttons path="sex" value="${testActivitiAudit.sex!}" items="${fn.getDictList('sex')}" itemLabel="label" itemValue="value" class=""/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">学历：</label>
+					<div class="col-sm-9">
+					<input name="edu" value="${testActivitiAudit.edu!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>调整原因：</label>
+					<div class="col-sm-9">
+					<textarea name="content" rows="4"    class="form-control required">${testActivitiAudit.content!}</textarea>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">现行标准 薪酬档级：</label>
+					<div class="col-sm-9">
+					<input name="olda" value="${testActivitiAudit.olda!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>现行标准 月工资额：</label>
+					<div class="col-sm-9">
+					<input name="oldb" value="${testActivitiAudit.oldb!}"    class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">现行标准 年薪总额：</label>
+					<div class="col-sm-9">
+					<input name="oldc" value="${testActivitiAudit.oldc!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">调整后标准 薪酬档级：</label>
+					<div class="col-sm-9">
+					<input name="newa" value="${testActivitiAudit.newa!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>调整后标准 月工资额：</label>
+					<div class="col-sm-9">
+					<input name="newb" value="${testActivitiAudit.newb!}"    class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">调整后标准 年薪总额：</label>
+					<div class="col-sm-9">
+					<input name="newc" value="${testActivitiAudit.newc!}"    class="form-control "/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>月增资：</label>
+					<div class="col-sm-9">
+					<input name="addNum" value="${testActivitiAudit.addNum!}"    class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>执行时间：</label>
+					<div class="col-sm-9">
+                    <div class="input-group">
+                        <input readonly="" id="exeDate"   name="exeDate"  placeholder="请选择日期" class="form-control   required"   value="${fn.formatDate(testActivitiAudit.exeDate!, 'yyyy-MM-dd HH:mm:ss')}">
+                        <div class="input-group-append">
+                            <span class="input-group-text btn-custom border text-white"><i class="ti-calendar"></i></span>
+                        </div>
+                    </div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">备注信息：</label>
+					<div class="col-sm-9">
+					<textarea name="remarks" rows="4"    class="form-control ">${testActivitiAudit.remarks!}</textarea>
+					</div>
+				</div>
+		<div class="form-group row">
+		<div class="offset-sm-3 col-sm-9 m-t-15">
+		<% if(testActivitiAudit.act.taskDefKey! != '' && !testActivitiAudit.act.finishTask! && testActivitiAudit.act.isNextGatewaty!){ %>
+            <button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit"  onclick="$('#flag').val('yes')">重新提交</button>
+			<button id="reject" class="btn btn-danger waves-effect waves-light btn-md m-r-5" type="submit" onclick="$('#flag').val('no')">销毁申请</button>
+
+		<% } %>
+		<% if(testActivitiAudit.act.startTask!){ %>
+            <button class="btn btn-custom waves-effect waves-light btn-md m-r-5" data-loading-text="正在提交...">提 交</button>
+		<% } %>
+		 <a href="javascript:window.history.go(-1)" class="btn btn-danger waves-effect waves-light btn-md">
+             <i class="fa fa fa-arrow-left"></i> 返回
+         </a>
+        </div>
+		</div>
+		</form>
+			<%if(isNotEmpty(testActivitiAudit.id!)){ %>
+			<#flowChart procInsId="${testActivitiAudit.act.procInsId}"/>
+			<#histoicFlow procInsId="${testActivitiAudit.act.procInsId}" />
+		<% } %>
+		</div>
+<% } %>

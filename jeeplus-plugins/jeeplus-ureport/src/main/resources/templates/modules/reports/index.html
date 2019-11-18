@@ -1,0 +1,103 @@
+<%
+layout("/include/_container.html",{title:"报表设计", parent:"报表应用"}){
+%>
+
+
+
+<div class="white-box">
+  <table class="table table-striped" id="report-table">
+        <thead>
+        <tr>
+          <th>序号</th>
+          <th>报表名</th>
+          <th>更新时间</th>
+          <th data-sortable="false"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(var report in reports){ %>
+        <tr>
+          <td>${reportLP.index}</td>
+          <td>${report.name}</td>
+          <td>${fn.formatDate(report.updateDate!, 'yyyy-MM-dd HH:mm:ss')}</td>
+          <td class="text-right">
+            <div class="btn-group" role="group">
+              <div class="btn-group">
+                <button title="Preview" value="Preview" class="btn btn-sm btn-info"
+                        onclick="jp.go('${ctx}/sys/menu/iframe?title=预览&parent=报表设计&url=${ctxPath}/ureport/preview?_u=${prefix}${report.name} ')">
+                  <i class="fa fa-search-plus"></i> 预览
+                </button>
+              </div>
+              <div class="btn-group">
+                <button title="Design" type="button" class="btn btn-sm btn-success"
+                        onclick="jp.go('${ctx}/sys/menu/iframe?title=设计&parent=报表设计&url=${ctxPath}/ureport/designer?_u=${prefix}${report.name}')">
+                  <i class="fa fa-edit"></i> 设计
+                </button>
+              </div>
+              <div class="btn-group">
+                <button title="Delete" type="button" value="Delete" class="btn btn-sm btn-danger"
+                        onclick="deleteReport('${prefix}${report.name}')">
+                  <i class="fa fa-trash"></i> 删除
+                </button>
+
+              </div>
+
+              <div class="btn-group" role="group">
+                <button title="Export" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-download"></i> 导出
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="${ctxPath}/ureport/pdf/show?_u=${prefix}${report.name}" target="_blank">
+                    <i class="fa fa-print"></i> Print</a></li>
+                  <li><a href="${ctxPath}/ureport/pdf?_u=${prefix}${report.name}" target="_blank">
+                    <i class="fa fa-file-pdf-o"></i> PDF</a></li>
+                  <li><a  href="${ctxPath}/ureport/excel?_u=${prefix}${report.name}" target="_blank">
+                    <i class="fa fa-file-excel-o"></i> Excel</a></li>
+                  <li><a  href="${ctxPath}/ureport/word?_u=${prefix}${report.name}" target="_blank">
+                    <i class="fa fa-file-word-o"></i> Word</a></li>
+                </ul>
+              </div>
+            </div>
+
+          </td>
+        </tr>
+        <% } %>
+        </tbody>
+      </table>
+
+  <div class="btn-toolbar">
+    <button type="button" class="btn btn-custom waves-effect waves-light w-xs m-b-5" onclick="createReport()">
+      <i class="fa fa-plus"></i> 新建
+    </button>
+  </div>
+
+</div>
+
+<script>
+
+  function createReport() {
+    jp.go("${ctx}/sys/menu/iframe?title=新建&parent=报表设计&url=${ctxPath}/ureport/designer");
+
+  }
+
+
+  function deleteReport(id) {
+
+    jp.confirm('确认要删除该报表吗？', function(){
+      var index =jp.loading();
+      jp.get("${ctx}/reports/delete?id="+id, function(data){
+        if(data.success){
+          jp.success(data.msg)
+          jp.go("${ctx}/reports/index")
+        }else {
+          jp.error(data.msg);
+        }
+      })
+
+    })
+
+  }
+</script>
+
+<% } %>

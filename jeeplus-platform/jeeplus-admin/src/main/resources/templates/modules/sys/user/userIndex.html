@@ -1,0 +1,99 @@
+<%
+layout("/include/_container.html",{title:"用户管理", parent:"单位组织"}){
+%>
+	<div class="row">
+		<div class="col-sm-3 col-md-2 p-r-5">
+			<div class="white-box">
+				<div class="input-group">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-sm waves-effect waves-light btn-custom"><i class="fa fa-search"></i></button>
+					</span>
+					<input type="text" class="form-control input-sm"  id="search_q" placeholder="查找..." >
+				</div>
+				<div id="jstree" class="overflow-auto; border-0"></div>
+			</div>
+		</div>
+		<div  class="col-sm-9 col-md-10 p-l-0">
+
+			<!-- 文件上传 -->
+			<div id="import-collapse" class="collapse white-box m-b-5">
+				<a class="jp-ti-close close close" onclick="$('#import-collapse').fadeToggle()">
+					<i class="fa fa-times"></i>
+				</a>
+				<form id="importForm" method="POST" enctype="multipart/form-data" class="row form-horizontal" >
+					<div class="col-xs-12 col-sm-6">
+						<input name="file" type="file"  class="required form-control" />
+						<span class="text-muted"><small>只允许导入“xls”或“xlsx”格式文件！</small></span>
+					</div>
+					<div class="col-xs-12 col-sm-6">
+						<a  id="btnImportExcel"  class="btn btn-custom waves-effect waves-light btn-rounded m-l-10 btn-md"><i class="fa fa-upload"></i> 开始上传</a>
+						<a  id="btnDownloadTpl" class="btn btn-custom waves-effect waves-light btn-rounded m-l-10 btn-md"><i class="fa fa-download"></i> 下载模板</a>
+					</div>　
+				</form>
+			</div>
+
+			<!-- 搜索框-->
+			<div id="search-collapse" class="white-box collapse m-b-5">
+				<a class="jp-ti-close close" onclick="$('#search-collapse').fadeToggle()">
+					<i class="fa fa-times"></i>
+				</a>
+				<form id="searchForm" class="form-inline" >
+						<div class="form-group m-b-10 m-r-10">
+							<label class="m-r-10">归属公司：</label>
+							<#treeselect id="company" name="company.id"
+							title="公司" url="/sys/office/treeData?type=1" allowClear="true"/>
+						</div>
+						<div class="form-group m-b-10 m-r-10">
+							<label class="m-r-10">归属部门：</label>
+							<#treeselect id="office" name="office.id"
+								title="部门" url="/sys/office/treeData?type=2" allowClear="true" notAllowSelectParent="true"/>
+						</div>
+						<div class="form-group m-b-10 m-r-10">
+							<label class="m-r-10">登录名：</label>
+							<input type="text" name="loginName" maxlength="100"  class="form-control"/>
+						</div>
+						<div class="form-group m-b-10 m-r-10">
+							<label class="m-r-10">姓名：</label>
+							<input type="text" name="name" maxlength="100"  class="form-control"/>
+						</div>
+						<div class="form-group m-b-10 m-r-10">
+						 <a  id="search" class="btn btn-sm btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+						 <a  id="reset" class="btn btn-sm btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+						</div>
+				</form>
+			</div>
+			<!-- 搜索框结束 -->
+
+			<div class="white-box">
+				<!-- 工具栏 -->
+				<div id="toolbar">
+
+					<% if(shiro.hasPermission("sys:user:add")){ %>
+						<button id="add" class="btn btn-custom waves-effect w-xs waves-light"  onclick="jp.openSaveDialog('新建用户', '${ctx}/sys/user/form','800px', '680px')"><i class="fa fa-plus"></i> 新建</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:user:edit")){ %>
+						<button id="edit" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="edit()">
+							<i class="fa fa-edit"></i> 修改
+						</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:user:del")){ %>
+						<button id="remove" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="deleteAll()">
+							<i class="fa fa-remove"></i> 删除
+						</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:user:import")){ %>
+						<button id="import" class="btn btn-white waves-effect w-xs waves-light"><i class="fa fa-upload"></i> 导入</button>
+					<% } %>
+					<% if(shiro.hasPermission("sys:user:export")){ %>
+						<button id="export" class="btn btn-white waves-effect w-xs waves-light"><i class="fa fa-download"></i> 导出</button>
+					<% } %>
+				</div><!-- 工具栏结束 -->
+				<!-- 表格 -->
+				<table id="table"
+					   data-toolbar="#toolbar">
+				</table>
+			</div>
+		</div>
+	</div>
+<% include("userIndex.js"){} %>
+<% } %>

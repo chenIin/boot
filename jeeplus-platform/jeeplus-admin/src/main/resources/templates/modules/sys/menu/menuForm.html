@@ -1,0 +1,71 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+	function save() {
+		var isValidate = jp.validateForm('#inputForm');//校验表单
+		if(!isValidate){
+			return false;
+		}else{
+			jp.loading();
+			jp.post("${ctx}/sys/menu/save",$('#inputForm').serialize(),function(data){
+				if(data.success){
+					jp.getParent().refreshNode(data);
+					jp.success(data.msg);
+					var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+					parent.layer.close(dialogIndex);
+				}else {
+					jp.error(data.msg);
+				}
+			})
+		}
+
+	}
+
+		
+	</script>
+	<form id="inputForm"  action="${ctx}/sys/menu/save" method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${menu.id!}">
+		<table class="table table-bordered">
+		     <tbody>
+		      <tr>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font> 上级菜单:</label></td>
+		         <td class="width-35" ><#treeselect id="menu" name="parent.id" value="${menu.parent.id!}" labelName="parent.name" labelValue="${menu.parent.name!}"
+					title="菜单" url="/sys/menu/treeData" extId="${menu.id!}"   allowClear="true" allowSearch="true" class="form-control required"/></td>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font> 名称:</label></td>
+		         <td  class="width-35" ><input name="name" value="${menu.name!}" maxlength="50" class="required form-control "/></td>
+		      </tr>
+		      <tr>
+		         <td  class="active"><label class="pull-right">链接:</label></td>
+		         <td><input name="href"  value="${menu.href!}" maxlength="2000" class="form-control "/>
+					<span class="text-muted"><small>点击菜单跳转的页面</small></span></td>
+		         <td  class="active"><label class="pull-right">目标:</label></td>
+		         <td>
+					 <#select path="target" value="${menu.target!}" notAllowNull="${true}" class="form-control required" items="${fn.getDictList('target')}" itemLabel="label" itemValue="value"/>
+					<span class="text-muted"><small>本系统页面打开:self,第三方链接打开:iframe，新窗口打开:blank</small></span></td>
+		      </tr>
+		      <tr>
+		         <td  class="active"><label class="pull-right">图标:</label></td>
+		         <td><#iconselect id="icon" name="icon" value="${menu.icon!}"/></td>
+		         <td  class="active"><label class="pull-right">菜单类型:</label></td>
+		         <td><#radiobuttons path="type" value="${menu.type}" items="${fn.getDictList('menu_type')}" itemLabel="label" itemValue="value"  class="required "/>
+				 </td>
+		      </tr>
+		      <tr>
+		      	 <td  class="active"><label class="pull-right">可见:</label></td>
+		         <td><#radiobuttons path="isShow" value="${menu.isShow}" items="${fn.getDictList('show_hide')}" itemLabel="label" itemValue="value"  class="required "/>
+					<span class="text-muted"><small>该菜单或操作是否显示到系统菜单中</small></span></td>
+		         <td  class="active"><label class="pull-right">权限标识:</label></td>
+		         <td><input name="permission" value="${menu.permission!}" maxlength="100" class="form-control "/>
+					<span class="text-muted"><small>控制器中定义的权限标识，<br/>如：@Requires Permissions("权限标识")</small></span></td>
+		      </tr>
+		      <tr>
+			     <td  class="active"><label class="pull-right">备注:</label></td>
+				  <td><textarea name="remarks" rows="3" maxlength="200" class="form-control ">${menu.remarks!}</textarea></td>
+		         <td  class="active"></td>
+		         <td></td>
+		      </tr>
+		    </tbody>
+		  </table>
+	</form>
+	<% } %>

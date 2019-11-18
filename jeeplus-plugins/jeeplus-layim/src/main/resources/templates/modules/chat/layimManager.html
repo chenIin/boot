@@ -1,0 +1,246 @@
+<%
+layout("/include/_dialog.html"){
+%>
+<link href="${ctxStatic}/plugins/layui/dist/css/manager.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript">
+    $(document).ready(function () {
+        refreshFriends();
+        refreshGroups();
+    });
+
+    function refreshGroups() {
+        jp.get("${ctx}/layim/layGroup/data", function (data) {
+            var groupTpl = $('#groupTpl').html(); //读取模版
+            laytpl(groupTpl).render(data, function (render) {
+                $("#my-groups-view").html(render);
+                // $("#my-groups-view").prop('outerHTML', render);
+            });
+
+        })
+    }
+
+    function addToGroup(layGroupId) {
+        top.layer.tab({
+            type: 2,
+            area: ['800px', '500px'],
+            title: "添加好友",
+            name: 'friend',
+            content: "${ctx}/layim/contact/searchUsers",
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                var iframeWin = layero.find('iframe')[0].contentWindow; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                var ids = iframeWin.getSelectedIds();
+
+                if (ids == "-1") {
+                    return;
+                }
+                jp.go("${ctx}/layim/layGroup/addUser?ids=" + ids + "&groupid=" + layGroupId);
+                top.layer.close(index);//关闭对话框。
+            },
+            cancel: function (index) {
+            }
+        });
+    };
+
+    function addGroup() {
+        jp.openChildDialog("创建群组", "${ctx}/layim/layGroup/form", "800px", "500px", refreshGroups);
+
+    }
+
+    function delGroup(id) {
+        jp.confirm("确认解散该群吗？", function () {
+            jp.get('${ctx}/layim/layGroup/delete?id=' + id, function (data) {
+                if (data.success) {
+                    jp.success("解散成功!");
+                    refreshGroups();
+                }
+            })
+        })
+
+    }
+
+    function editGroup(id) {
+        jp.openChildDialog("编辑群组", "${ctx}/layim/layGroup/form?id=" + id, "800px", "500px", refreshGroups);
+
+    }
+
+    function viewGroupMember(id) {
+        jp.openViewDialog("查看群成员", "${ctx}/layim/layGroup/member-view?id=" + id, "800px", "500px");
+
+    }
+
+    function editGroupMember(id) {
+        jp.openViewDialog("查看群成员", "${ctx}/layim/layGroup/member-edit?id=" + id, "800px", "500px");
+
+    }
+
+    function outGroup(id) {
+        jp.confirm("确认退出该群吗？", function () {
+            jp.get('${ctx}/layim/layGroup/logout?user.id=${fn.getUser().id}&group.id=' + id, function (data) {
+                if (data.success) {
+                    jp.success("退出成功!");
+                    refreshGroups();
+                }
+            })
+        })
+
+    }
+
+    function refreshFriends() {
+        jp.get("${ctx}/layim/contact/myFriends", function (data) {
+            var friendTpl = $('#friendTpl').html(); //读取模版
+            laytpl(friendTpl).render(data, function (render) {
+
+                $("#my-friends-view").html(render);
+                // $("#my-friends-view").prop('outerHTML', render);
+            });
+
+        })
+    }
+
+    function addFriend() {
+        jp.openUserSelectDialog(true, function (ids) {
+            jp.get("${ctx}/layim/contact/addFriend?ids=" + ids, function (result) {
+                if (result.success) {
+                    refreshFriends()
+                    jp.success(result.msg);
+                }
+            })
+        });
+    };
+
+    function delFriend(id) {
+        jp.get("${ctx}/layim/contact/delFriend?id=" + id, function (data) {
+            if (data.success) {
+                refreshFriends()
+                jp.success(data.msg);
+            }
+        })
+    }
+
+
+</script>
+
+<div class="tabs-container">
+    <ul class="nav nav-tabs">
+
+        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#tab-1" aria-expanded="true">好友管理：</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#tab-2" aria-expanded="false">群组管理：</a>
+        </li>
+    </ul>
+    <div class="tab-content border-bottom-0">
+        <div id="tab-1" class="tab-pane fade show active">
+            <div class="animated fadeInRight">
+                <div class="row" id="my-friends-view">
+                </div>
+            </div>
+        </div>
+        <div id="tab-2" class="tab-pane fade">
+            <div class="animated fadeInRight">
+                <div class="row" id="my-groups-view">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script id="groupTpl" type="text/html">
+        <div class="col-sm-4">
+            <div class="config-card add hand">
+                <a href="#" onclick="addGroup()">
+                    <span>+</span></a>
+            </div>
+        </div>
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+        <div class="col-sm-4">
+            <div class='config-card'>
+                <div class="head bg-custom">
+                    <span class='title ml-4'>{{ d[i].groupname }}</span>
+                    <div class='circle bg-custom'></div>
+                    <div class='priority low bg-custom'>
+                        <img alt="image" class="img-circle m-t-xs img-responsive"
+                             src="{{# if(d[i].avatar != ''){ }}{{  d[i].avatar }}{{# }else{ }}${ctxStatic}/common/images/flat-avatar.png {{# } }}"/>
+                    </div>
+                </div>
+                <div class='content mx-2 m-t-30'>
+                    <div  style="width: 20rem;">
+                        <img src="{{ d[i].createBy.photo }}" style="width: 35px;height: auto;"
+                             alt="Card image cap">
+                        <h9>{{d[i].createBy.name}}(群主)</h9>
+                        <hr>
+                        <div class="card-block">
+                            <p class="card-text">{{ d[i].remarks }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mask">
+                    <div class="opts">
+                        {{# if(d[i].createBy.name == '${fn.getUser().name}'){ }}
+                        <button type="button"  onclick="editGroup('{{ d[i].id }}')"
+                                class="opt-btn btn btn-custom btn-xs ">
+                            编辑
+                        </button>
+                        <button type="button" onclick="delGroup('{{ d[i].id }}')"
+                                class="opt-btn btn btn-custom btn-xs ">
+                            删除
+                        </button>
+                        <button type="button" onclick="editGroupMember('{{ d[i].id }}')"
+                                class="opt-btn  btn btn-custom btn-xs ">
+                           群员
+                        </button>
+                        {{# }else{ }}
+                        <button type="button" onclick="outGroup('{{ d[i].id }}')"
+                                class="opt-btn  btn btn-custom btn-xs ">
+                            退出
+                        </button>
+                        <button type="button" onclick="viewGroupMember('{{ d[i].id }}')"
+                                class="opt-btn  btn btn-custom btn-xs ">
+                            群员
+                        </button>
+                        {{# } }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{# } }}
+    </script>
+    <script id="friendTpl" type="text/html">
+        <div class="col-sm-2">
+            <div class="contact-box">
+                <a href="#" onclick="addFriend()">
+                    <div class="text-center">
+                        <img alt="image" class="img-circle m-t-xs img-responsive"
+                             src="${ctxStatic}/common/images/add_user.jpg">
+                    </div>
+                    <div class="text-center">
+                        <h5>添加好友</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {{# for(var i = 0, len = d.length; i < len; i++){ }}
+        <div class="col-sm-2">
+            <div class="contact-box">
+                <a href="#">
+                    <div class="text-center photo">
+                        <img alt="image" class="img-circle m-t-xs img-responsive"
+                             src="{{# if(d[i].photo != ''){ }}{{  d[i].photo }}{{# }else{ }}${ctxStatic}/common/images/flat-avatar.png {{# } }}"/>
+                        <h5>{{ d[i].name }}</h5>
+                        <div class="mask ">
+                            <div class="opts">
+                                <button class='btn btn-primary btn-sm hand' onclick="delFriend('{{ d[i].id }}')">
+                                    <span class='icon icon-file-alt mr-3'></span>删除
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        </div>
+        {{# } }}
+    </script>
+
+    <% } %>

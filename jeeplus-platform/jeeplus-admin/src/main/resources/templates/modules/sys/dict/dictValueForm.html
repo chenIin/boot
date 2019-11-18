@@ -1,0 +1,53 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+        function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+            }else{
+                jp.loading();
+                jp.post("${ctx}/sys/dict/saveDictValue",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refreshDictValue();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.success(data.msg)
+
+                    }else{
+                        jp.error(data.msg);
+                    }
+                })
+            }
+
+        }
+
+	</script>
+	<form id="inputForm" method="post" class="form-horizontal p-15">
+		<input type="hidden" name="dictValueId" value="${dictValue.id }"/>
+		<input type="hidden" name="dictType.id" value="${dictValue.dictType.id}">
+		<table class="table table-bordered">
+		   <tbody>
+		       <tr>
+		         <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>标签:</label></td>
+		         <td class="width-35" >
+					 <input type="text" name="label" value="${dictValue.label}" maxlength="50" class="form-control required"/>
+				 </td>
+		      </tr>
+		       <tr>
+		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>键值:</label></td>
+		          <td  class="width-35" >
+					  <input type="text" name="value" value="${dictValue.value}" maxlength="250" class="form-control required"/>
+				  </td>
+		      </tr>
+		      <tr>
+		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>排序:</label></td>
+		          <td  class="width-35" >
+					  <input name="sort" value="${dictValue.sort}" maxlength="50" class="form-control required"/>
+				  </td>
+		      </tr>
+		   </tbody>
+		  </table>   
+	</form>
+<%}%>

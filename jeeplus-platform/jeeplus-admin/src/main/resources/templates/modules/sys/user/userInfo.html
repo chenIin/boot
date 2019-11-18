@@ -1,0 +1,358 @@
+<%
+layout("/include/_container.html",{title:"个人资料", parent:"系统设置"}){
+%>
+	<script type="text/javascript">
+		$(document).ready(function() {
+
+            jp.ajaxForm("#setting", function (data) {
+				if(data.success){
+                    jp.toastr_success(data.msg);
+				}else {
+                    jp.toastr_success(data.msg);
+				}
+            })
+		    jp.ajaxForm("#concat", function (data) {
+                if(data.success){
+                    jp.toastr_success(data.msg);
+                }else {
+                    jp.toastr_success(data.msg);
+                }
+            })
+
+            jp.ajaxForm("#pwd", function (data) {
+                if(data.success){
+                    jp.toastr_success(data.msg);
+                }else {
+                    jp.toastr_error(data.msg);
+                }
+            },function () {
+                if($("#pwd").find("#newPassword").val() != $("#pwd").find("#confirmNewPassword").val()){
+                    jp.toastr_warning("输入的2次新密码不一致，请重新输入！")
+                    return false;
+                }else {
+                    return true;
+				}
+            })
+
+
+            var drEvent = $('.dropify').dropify(
+                {
+                    error: {
+                        'fileSize': 'The file size is too big ({{ value }} max).',
+                        'minWidth': 'The image width is too small ({{ value }}}px min).',
+                        'maxWidth': 'The image width is too big ({{ value }}}px max).',
+                        'minHeight': 'The image height is too small ({{ value }}}px min).',
+                        'maxHeight': 'The image height is too big ({{ value }}px max).',
+                        'imageFormat': 'The image format is not allowed ({{ value }} only).'
+                    }
+                }
+			);
+
+
+            drEvent.on('dropify.fileReady', function(event, element){
+                var importForm = $('#image')[0];
+                jp.block('#image',"文件上传中...");
+                jp.uploadFile(importForm,"${ctx}/sys/user/imageUpload",function (data) {
+                    if(data.success){
+                        jp.toastr_success(data.msg);
+                    }else{
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.unblock('#image',200);
+                })
+
+            });
+            drEvent.on('dropify.beforeClear', function(event, element){
+
+                return confirm("Do you really want to delete \"" + element.filename + "\" ?");
+            });
+            drEvent.on('dropify.afterClear', function(event, element){
+                alert('File deleted');
+            });
+
+		});
+	</script>
+
+	<ul class="nav nav-tabs mt-2" role="tablist">
+		<li class="nav-item">
+			<a  class="nav-link active show" data-toggle="tab" href="#user1" aria-expanded="false">
+				<span>基本信息</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a  class="nav-link" data-toggle="tab" href="#user2" aria-expanded="true">
+				<span>联系方式</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a  class="nav-link" aria-expanded="false" data-toggle="tab" href="#user3">
+				<span>我的头像</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a  class="nav-link" aria-expanded="false" data-toggle="tab" href="#user4">
+				 <span>修改密码</span>
+			</a>
+		</li>
+		<li class="nav-item">
+			<a  class="nav-link"aria-expanded="false" data-toggle="tab" href="#user5">
+				<span>我的日志</span>
+			</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+	<div id="user1" class="tab-pane active">
+		<div class="card card-custom border-0">
+			<div class="card-heading">
+				<h3 class="card-title text-custom m-0">基本设置</h3>
+			</div>
+			<div class="card-body">
+				<form class="form-horizontal" id="setting" action="${ctx}/sys/user/saveInfo">
+					<div class="form-group row">
+						<label  class="col-sm-1 control-label"><font color="red">*</font>姓名</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control required" name="name" value="${user.name!}" placeholder="姓名"> </div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-1 control-label">签名</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control "  name="sign" value="${user.sign!}" placeholder="个性签名"> </div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-1 control-label">公司</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" readonly="readonly" disabled name="company.name" value="${user.company.name!}" placeholder="公司"> </div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-1 control-label">部门</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" readonly="readonly" disabled name="office.name" value="${user.office.name!}" placeholder="部门"> </div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-sm-1 control-label">备注</label>
+						<div class="col-sm-9">
+							<textarea class="form-control"  name="remarks"  placeholder="备注"> ${user.remarks!}</textarea>
+						</div>
+					</div>
+
+					<div class="form-group row m-b-0">
+						<div class="offset-sm-1 col-sm-9 m-t-15">
+							<button type="submit" data-loading-text="正在提交..." class="btn btn-custom waves-effect waves-light w-xs m-b-5">保存</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		</div>
+		<div id="user2" class="tab-pane">
+			<div class="card card-custom border-0">
+				<div class="card-heading">
+					<h3 class="card-title text-custom m-0">联系方式</h3>
+				</div>
+				<div class="card-body">
+					<form class="form-horizontal" id="concat" action="${ctx}/sys/user/saveInfo">
+						<div class="form-group row">
+							<label  class="col-sm-1 control-label">邮箱</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control email" name="email" value="${user.email!}" placeholder="邮箱"> </div>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-1 control-label">手机</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control  isMobile"  name="mobile" value="${user.mobile!}" placeholder="手机"> </div>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-1 control-label">电话</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control isPhone" name="phone" value="${user.phone!}" placeholder="电话"> </div>
+						</div>
+
+						<div class="form-group row m-b-0">
+							<div class="offset-sm-1 col-sm-9">
+								<button type="submit" data-loading-text="正在提交..." class="btn btn-custom waves-effect waves-light w-xs m-b-5">保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div id="user3" class="tab-pane">
+			<div class="card card-custom border-0">
+				<div class="card-heading">
+					<h3 class="card-title text-custom m-0">我的头像</h3>
+				</div>
+				<div class="card-body">
+					<div class="form-group">
+						<div style="text-align: center">
+							<form id="image"  action="${ctx}/sys/user/imageUpload" class="form-horizontal">
+								<input type="file" name="file" data-show-remove="false"  data-max-file-size-preview="2M" data-allowed-file-extensions="png jpg jpeg bmp gif"  class="dropify" data-default-file="${user.photo!}" />
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="user4" class="tab-pane">
+			<div class="card card-custom border-0">
+				<div class="card-heading">
+					<h3 class="card-title text-custom m-0">修改密码</h3>
+				</div>
+				<div class="card-body">
+					<form id="pwd"  action="${ctx}/sys/user/savePwd" class="form-horizontal">
+						<div class="form-group row">
+							<label class="col-sm-1 control-label"><font color="red">*</font>旧密码:</label>
+							<div class="col-sm-9">
+								<input id="oldPassword" name="oldPassword" type="password" value="" maxlength="50" minlength="3"  class="form-control  max-width-250 required"/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-1 control-label"><font color="red">*</font>新密码:</label>
+							<div class="col-sm-9">
+								<input id="newPassword" name="newPassword" type="password" value="" maxlength="50" minlength="3" class="form-control  max-width-250 required"/>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-1 control-label"><font color="red">*</font>确认新密码:</label>
+							<div class="col-sm-9">
+								<input id="confirmNewPassword" name="confirmNewPassword" type="password" value="" maxlength="50" minlength="3" class="form-control  max-width-250 required"></input>
+							</div>
+						</div>
+						<div class="form-group row m-b-0">
+							<div class="offset-sm-1 col-sm-9">
+								<button type="submit" data-loading-text="正在提交..." class="btn btn-custom waves-effect waves-light w-xs m-b-5">保存</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div id="user5" class="tab-pane">
+			<div class="card card-tabs border-0">
+				<div class="card-body">
+					<ul class="nav nav-pills float-left m-b-15" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active show"  data-toggle="pill" onclick="getLog(1)" role="tab" aria-controls="cardpills-1" aria-expanded="true" aria-selected="true">登录日志</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link show"  data-toggle="pill"  role="tab" onclick="getLog(2)" aria-controls="cardpills-2" aria-expanded="false" aria-selected="false">访问日志</a>
+						</li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade active show" id="cardpills-1" role="tabpanel" aria-labelledby="cardpills-tab-1">
+							<div class="tab-content">
+								<table id="table"
+									   data-toolbar="#toolbar"
+									   class="table-bordered">
+								</table>
+								<script>
+
+									function getLog(value) {
+										searchParam.type =  value;
+										$table.bootstrapTable('refresh',{silent: true});
+									}
+
+									var searchParam = {type:1};
+
+									var $table = $('#table').bootstrapTable({
+
+										method: 'post',
+										//类型json
+										dataType: "json",
+										contentType: "application/x-www-form-urlencoded",
+										//允许列拖动大小
+										resizable: true,
+										//固定表头
+										stickyHeader: true,
+										stickyHeaderOffsetY: 0,
+										//是否显示行间隔色
+										striped: false,
+										//是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+										cache: false,
+										//是否显示分页（*）
+										pagination: true,
+										//排序方式
+										sortOrder: "asc",
+										//初始化加载第一页，默认第一页
+										//我设置了这一项，但是貌似没起作用，而且我这默认是0,- -
+										pageNumber:1,
+										//每页的记录行数（*）
+										pageSize: 10,
+										//可供选择的每页的行数（*）
+										pageList: [10, 25, 50, 100],
+										//显示详细内容函数
+										detailFormatter: "detailFormatter",
+										//这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
+										url: "${ctx}/sys/log/data/mine",
+										//默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+										//queryParamsType:'',
+										////查询参数,每次调用是会带上这个参数，可自定义
+										onShowSearch: function () {
+											$("#search-collapse").slideToggle();
+										},
+										queryParams : function(params) {
+
+											searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
+											searchParam.pageSize = params.limit === undefined? -1 : params.limit;
+											if(params.sort && params.order){
+												searchParam.orderBy = params.sort+ " "+  params.order;
+											}
+
+											return searchParam;
+										},
+										//分页方式：client客户端分页，server服务端分页（*）
+										sidePagination: "server",
+										onClickRow: function(row, $el){
+										},
+										columns: [{
+											checkbox: true
+
+										}, {
+											field: 'title',
+											title: '操作菜单',
+											sortable: true
+
+										}, {
+											field: 'createBy.company.name',
+											title: '所在公司',
+											sortable: true
+										}, {
+											field: 'createBy.office.name',
+											title: '所在部门',
+											sortable: true
+										}, {
+											field: 'requestUri',
+											title: 'URI',
+											sortable: true
+										}, {
+											field: 'method',
+											title: '提交方式',
+											sortable: true
+										}, {
+											field: 'remoteAddr',
+											title: '操作者IP',
+											sortable: true
+										}, {
+											field: 'createDate',
+											title: '操作时间',
+											sortable: true
+										}]
+
+									});
+								</script>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+
+<% } %>

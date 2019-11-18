@@ -1,0 +1,904 @@
+<%
+layout("/include/_container.html", {title:"首页", parent:"工作台"}){
+%>
+<!--<script src="${ctxStatic}/plugins/waypoints/lib/jquery.waypoints.js"></script>-->
+<script src="${ctxStatic}/plugins/counterup/jquery.counterup.min.js"></script>
+<script src="${ctxStatic}/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+<style>
+	.card-body.h450{
+		height: 450px;
+	}
+</style>
+<script>
+	$( document ).ready(function() {
+
+		var DrawSparkline = function() {
+					$('#sparkline1').sparkline([0, 23, 43, 35, 44, 45, 56, 37, 40], {
+						type: 'line',
+						width: "100%",
+						height: '165',
+						chartRangeMax: 50,
+						lineColor: '#ddd',
+						fillColor: 'rgba(221, 221, 221, 0.3)',
+						highlightLineColor: 'rgba(0,0,0,.1)',
+						highlightSpotColor: 'rgba(0,0,0,.2)',
+					});
+
+					$('#sparkline1').sparkline([25, 23, 26, 24, 25, 32, 30, 24, 19], {
+						type: 'line',
+						width: "100%",
+						height: '165',
+						chartRangeMax: 40,
+						lineColor: '#86C3F4',
+						fillColor: 'rgba(134, 195, 244, 0.3)',
+						composite: true,
+						highlightLineColor: 'rgba(0,0,0,.1)',
+						highlightSpotColor: 'rgba(0,0,0,.2)',
+					});
+
+					$('#sparkline2').sparkline([3, 6, 7, 8, 6, 4, 7, 10, 12, 7, 4, 9, 12, 13, 11, 12], {
+						type: 'bar',
+						height: '165',
+						barWidth: '10',
+						barSpacing: '3',
+						barColor: '#86C3F4'
+					});
+
+					$('#sparkline3').sparkline([20, 40, 30, 10], {
+						type: 'pie',
+						width: '165',
+						height: '165',
+						sliceColors: ['#64b5f6', '#90caf9', "#bbdefb", "#42a5f5"]
+					});
+
+					$('#sparkline4').sparkline([0, 23, 43, 35, 44, 45, 56, 37, 40], {
+						type: 'line',
+						width: "100%",
+						height: '165',
+						chartRangeMax: 50,
+						lineColor: '#86C3F4',
+						fillColor: 'transparent',
+						highlightLineColor: 'rgba(0,0,0,.1)',
+						highlightSpotColor: 'rgba(0,0,0,.2)'
+					});
+
+					$('#sparkline4').sparkline([25, 23, 26, 24, 25, 32, 30, 24, 19], {
+						type: 'line',
+						width: "100%",
+						height: '165',
+						chartRangeMax: 40,
+						lineColor: '#ddd',
+						fillColor: 'transparent',
+						composite: true,
+						highlightLineColor: 'rgba(0,0,0,1)',
+						highlightSpotColor: 'rgba(0,0,0,1)'
+					});
+
+					$('#sparkline6').sparkline([3, 6, 7, 8, 6, 4, 7, 10, 12, 7, 4, 9, 12, 13, 11, 12], {
+						type: 'bar',
+						height: '165',
+						barWidth: '10',
+						barSpacing: '3',
+						barColor: '#dddddd'
+					});
+
+					$('#sparkline6').sparkline([3, 6, 7, 8, 6, 4, 7, 10, 12, 7, 4, 9, 12, 13, 11, 12], {
+						type: 'line',
+						width: "100%",
+						height: '165',
+						lineColor: '#86C3F4',
+						fillColor: 'transparent',
+						composite: true,
+						highlightLineColor: 'rgba(0,0,0,.1)',
+						highlightSpotColor: 'rgba(0,0,0,.2)'
+					});
+
+
+				},
+				DrawMouseSpeed = function () {
+					var mrefreshinterval = 500; // update display every 500ms
+					var lastmousex=-1;
+					var lastmousey=-1;
+					var lastmousetime;
+					var mousetravel = 0;
+					var mpoints = [];
+					var mpoints_max = 30;
+					$('html').mousemove(function(e) {
+						var mousex = e.pageX;
+						var mousey = e.pageY;
+						if (lastmousex > -1) {
+							mousetravel += Math.max( Math.abs(mousex-lastmousex), Math.abs(mousey-lastmousey) );
+						}
+						lastmousex = mousex;
+						lastmousey = mousey;
+					});
+					var mdraw = function() {
+						var md = new Date();
+						var timenow = md.getTime();
+						if (lastmousetime && lastmousetime!=timenow) {
+							var pps = Math.round(mousetravel / (timenow - lastmousetime) * 1000);
+							mpoints.push(pps);
+							if (mpoints.length > mpoints_max)
+								mpoints.splice(0,1);
+							mousetravel = 0;
+							$('#sparkline5').sparkline(mpoints, {
+								tooltipSuffix: ' pixels per second',
+								type: 'line',
+								width: "100%",
+								height: '165',
+								chartRangeMax: 50,
+								lineColor: '#86C3F4',
+								fillColor: 'rgba(134, 195, 244, 0.3)',
+								highlightLineColor: 'rgba(24,147,126,.1)',
+								highlightSpotColor: 'rgba(24,147,126,.2)',
+							});
+						}
+						lastmousetime = timenow;
+						setTimeout(mdraw, mrefreshinterval);
+					}
+					// We could use setInterval instead, but I prefer to do it this way
+					setTimeout(mdraw, mrefreshinterval);
+				};
+
+		DrawSparkline();
+		DrawMouseSpeed();
+
+		var resizeChart;
+
+		$(window).resize(function(e) {
+			clearTimeout(resizeChart);
+			resizeChart = setTimeout(function() {
+				DrawSparkline();
+				DrawMouseSpeed();
+			}, 300);
+		});
+		/*echarts*/
+		var option ={
+			"seriesCnt": "4",
+			"backgroundColor": "rgba(0,0,0,0)",
+			"titleColor": "#516b91",
+			"subtitleColor": "#93b7e3",
+			"textColorShow": false,
+			"textColor": "#333",
+			"markTextColor": "#eee",
+			"color": [
+				"#516b91",
+				"#59c4e6",
+				"#edafda",
+				"#93b7e3",
+				"#a5e7f0",
+				"#cbb0e3"
+			],
+			"borderColor": "#ccc",
+			"borderWidth": 0,
+			"visualMapColor": [
+				"#516b91",
+				"#59c4e6",
+				"#a5e7f0"
+			],
+			title: {
+				text: "订单销量",
+				subtext: "年销售统计",
+				x: "center"
+			},
+			tooltip: {
+				trigger: "item"
+			},
+			legend: {
+				orient: "vertical",
+				x: "left",
+				data: ["百货", "数码", "服装"]
+			},
+			dataRange: {
+				min: 0,
+				max:2500,
+				x: "left",
+				y: "bottom",
+				inRange: {
+					color: ['#e0ffff', '#006edd']
+				},
+				text: ["高", "低"],
+				calculable: true
+			},
+			toolbox: {
+				show: false,
+				orient: "vertical",
+				x: "right",
+				y: "bottom",
+				feature: {
+					mark: {
+						show: true
+					},
+					dataView: {
+						show: true,
+						readOnly: false
+					},
+					restore: {
+						show: true
+					},
+					saveAsImage: {
+						show: true
+					}
+				}
+			},
+			roamController: {
+				show: true,
+				x: "right",
+				mapTypeControl: {
+					china: true
+				}
+			},
+			series: [
+				{
+					name: "百货",
+					type: "map",
+					mapType: "china",
+					roam: false,
+					mapValueCalculation: "sum",
+					itemStyle: {
+						normal: {
+							label: {
+								show: true
+							}
+						},
+						emphasis: {
+							label: {
+								show: true
+							}
+						}
+					},
+					data: [
+						{
+							value: 234,
+							name: "北京"
+						},
+						{
+							value: 532,
+							name: "天津"
+						},
+						{
+							value: 134,
+							name: "上海"
+						},
+						{
+							value: 983,
+							name: "重庆"
+						},
+						{
+							value: 783,
+							name: "河北"
+						},
+						{
+							value: 345,
+							name: "河南"
+						},
+						{
+							value: 872,
+							name: "云南"
+						},
+						{
+							value: 94,
+							name: "辽宁"
+						},
+						{
+							value: 342,
+							name: "黑龙江"
+						},
+						{
+							value: 989,
+							name: "湖南"
+						},
+						{
+							value: 767,
+							name: "安徽"
+						},
+						{
+							value: 675,
+							name: "山东"
+						},
+						{
+							value: 874,
+							name: "新疆"
+						},
+						{
+							value: 874,
+							name: "江苏"
+						},
+						{
+							value: 878,
+							name: "浙江"
+						},
+						{
+							value: 928,
+							name: "江西"
+						},
+						{
+							value: 44,
+							name: "湖北"
+						},
+						{
+							value: 448,
+							name: "广西"
+						},
+						{
+							value: 887,
+							name: "甘肃"
+						},
+						{
+							value: 903,
+							name: "山西"
+						},
+						{
+							value: 673,
+							name: "内蒙古"
+						},
+						{
+							value: 563,
+							name: "陕西"
+						},
+						{
+							value: 747,
+							name: "吉林"
+						},
+						{
+							value: 112,
+							name: "福建"
+						},
+						{
+							value: 473,
+							name: "贵州"
+						},
+						{
+							value: 647,
+							name: "广东"
+						},
+						{
+							value: 838,
+							name: "青海"
+						},
+						{
+							value: 626,
+							name: "西藏"
+						},
+						{
+							value: 515,
+							name: "四川"
+						},
+						{
+							value: 172,
+							name: "宁夏"
+						},
+						{
+							value: 77,
+							name: "海南"
+						},
+						{
+							value: 837,
+							name: "台湾"
+						},
+						{
+							value: 677,
+							name: "香港"
+						},
+						{
+							value: 43,
+							name: "澳门"
+						}
+					]
+				},
+				{
+					name: "数码",
+					type: "map",
+					mapType: "china",
+					roam: false,
+					mapValueCalculation: "sum",
+					itemStyle: {
+						normal: {
+							label: {
+								show: true
+							}
+						},
+						emphasis: {
+							label: {
+								show: true
+							}
+						}
+					},
+					data: [
+						{
+							value: 623,
+							name: "北京"
+						},
+						{
+							value: 322,
+							name: "天津"
+						},
+						{
+							value: 57,
+							name: "上海"
+						},
+						{
+							value: 566,
+							name: "重庆"
+						},
+						{
+							value: 737,
+							name: "河北"
+						},
+						{
+							value: 846,
+							name: "安徽"
+						},
+						{
+							value: 748,
+							name: "新疆"
+						},
+						{
+							value: 949,
+							name: "浙江"
+						},
+						{
+							value: 747,
+							name: "江西"
+						},
+						{
+							value: 848,
+							name: "山西"
+						},
+						{
+							value: 737,
+							name: "内蒙古"
+						},
+						{
+							value: 848,
+							name: "吉林"
+						},
+						{
+							value: 727,
+							name: "福建"
+						},
+						{
+							value: 626,
+							name: "广东"
+						},
+						{
+							value: 747,
+							name: "西藏"
+						},
+						{
+							value: 747,
+							name: "四川"
+						},
+						{
+							value: 747,
+							name: "宁夏"
+						},
+						{
+							value: 325,
+							name: "香港"
+						},
+						{
+							value: 509,
+							name: "澳门"
+						}
+					]
+				},
+				{
+					name: "服装",
+					type: "map",
+					mapType: "china",
+					roam: false,
+					mapValueCalculation: "sum",
+					itemStyle: {
+						normal: {
+							label: {
+								show: true
+							}
+						},
+						emphasis: {
+							label: {
+								show: true
+							}
+						}
+					},
+					data: [
+						{
+							value: 673,
+							name: "北京"
+						},
+						{
+							value: 636,
+							name: "天津"
+						},
+						{
+							value: 633,
+							name: "上海"
+						},
+						{
+							value: 99,
+							name: "广东"
+						},
+						{
+							value: 998,
+							name: "台湾"
+						},
+						{
+							value: 222,
+							name: "香港"
+						},
+						{
+							value: 666,
+							name: "澳门"
+						}
+					]
+				}
+			]
+		}
+		$.get('${ctxStatic}/plugins/echartsChinaMap/json/china.json', function (mapJson) {
+			echarts.registerMap('china', mapJson);
+			var chart = echarts.init(document.getElementById('china_map'));//在id为mainMap的dom元素中显示地图
+			chart.setOption(option);
+		});
+	});
+</script>
+
+<div class="row">
+	<div class="col-sm-3">
+		<div class="card widget-user">
+			<div class="card-body text-center">
+				<h2 class="text-custom" data-plugin="counterup">6599</h2>
+				<h5>访问量</h5>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-3">
+		<div class="card widget-user">
+			<div class="card-body text-center">
+				<h2 class="text-custom" data-plugin="counterup">5894</h2>
+				<h5>销售量</h5>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-3">
+		<div class="card widget-user">
+			<div class="card-body text-center">
+				<h2 class="text-custom" data-plugin="counterup">452</h2>
+				<h5>订单量</h5>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-sm-3">
+		<div class="card widget-user">
+			<div class="card-body text-center">
+				<h2 class="text-custom" data-plugin="counterup">1254</h2>
+				<h5>新用户</h5>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+
+	<div class="col-xl-4 col-sm-6">
+		<div class="card">
+			<div class="card-body h450">
+				<div class="dropdown float-right">
+					<a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+						<i class="zmdi zmdi-more-vert"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" class="dropdown-item">Action</a></li>
+						<li><a href="#" class="dropdown-item">Another action</a></li>
+						<li><a href="#" class="dropdown-item">Something else here</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item">Separated link</a></li>
+					</ul>
+				</div>
+
+				<h4 class="header-title m-t-0">日销售额</h4>
+
+
+				<div class="row text-center m-t-30">
+					<div class="col-6">
+						<h3 data-plugin="counterup">8,459</h3>
+						<p class="text-muted">总销售额</p>
+					</div>
+					<div class="col-6">
+						<h3 data-plugin="counterup">584</h3>
+						<p class="text-muted">网络销售</p>
+					</div>
+				</div>
+
+				<div class="text-center m-t-10">
+					<div id="morris-donut-example" class="morris-chart" style="height: 245px;">
+						<svg height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><path fill="none" stroke="#42a5f5" d="M233.328,197.5A75,75,0,0,0,304.3585884442099,146.57603591269296" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#42a5f5" stroke="#f5f5f5" d="M233.328,200.5A78,78,0,0,0,307.19981198197826,147.53907734920068L335.1385101033675,157.00898480819325A107.5,107.5,0,0,1,233.328,230Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#64b5f6" d="M304.3585884442099,146.57603591269296A75,75,0,0,0,166.0709080941063,89.31139369659871" stroke-width="2" opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 1;"></path><path fill="#64b5f6" stroke="#f5f5f5" d="M307.19981198197826,147.53907734920068A78,78,0,0,0,163.38062441787056,87.98384944446265L132.44236214115946,72.71709054489806A112.5,112.5,0,0,1,339.8738826663148,158.61405386903942Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#90caf9" d="M166.0709080941063,89.31139369659871A75,75,0,0,0,233.3044380554856,197.4999962988984" stroke-width="2" opacity="0" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); opacity: 0;"></path><path fill="#90caf9" stroke="#f5f5f5" d="M163.38062441787056,87.98384944446265A78,78,0,0,0,233.30349557770504,200.49999615085432L233.29422787952936,229.99999469508768A107.5,107.5,0,0,1,136.92616826821904,74.92966429845814Z" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="233.328" y="112.5" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="15px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 15px; font-weight: 800;" font-weight="800" transform="matrix(1.3492,0,0,1.3492,-81.4681,-42.1607)" stroke-width="0.7412037037037037"><tspan dy="5.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">店内销售</tspan></text><text x="233.328" y="132.5" text-anchor="middle" font-family="&quot;Arial&quot;" font-size="14px" stroke="none" fill="#000000" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: Arial; font-size: 14px;" transform="matrix(1.6129,0,0,1.6129,-143.0076,-76.4597)" stroke-width="0.62"><tspan dy="4.75" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">30</tspan></text></svg></div>
+					<ul class="list-inline chart-detail-list m-b-0">
+						<li class="list-inline-item">
+							<h5><i class="fa fa-circle m-r-5" style="color: #42a5f5;"></i>系列 A</h5>
+						</li>
+						<li class="list-inline-item">
+							<h5><i class="fa fa-circle m-r-5" style="color: #64b5f6;"></i>系列 B</h5>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div><!-- end col -->
+
+	<div class="col-xl-4 col-sm-6">
+		<div class="card">
+			<div class="card-body h450 ">
+				<div class="dropdown float-right">
+					<a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+						<i class="zmdi zmdi-more-vert"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" class="dropdown-item">Action</a></li>
+						<li><a href="#" class="dropdown-item">Another action</a></li>
+						<li><a href="#" class="dropdown-item">Something else here</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item">Separated link</a></li>
+					</ul>
+				</div>
+				<h4 class="header-title m-t-0">统计分析</h4>
+
+				<div class="row text-center m-t-30">
+					<div class="col-4">
+						<h3 data-plugin="counterup">1,507</h3>
+						<p class="text-muted">总销售额</p>
+					</div>
+					<div class="col-4">
+						<h3 data-plugin="counterup">916</h3>
+						<p class="text-muted">网络销售</p>
+					</div>
+					<div class="col-4">
+						<h3 data-plugin="counterup">22</h3>
+						<p class="text-muted">日销售额</p>
+					</div>
+				</div>
+
+				<div id="morris-bar-example" style="height: 280px; position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);" class="morris-chart m-t-10">
+					<svg height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; left: -0.65625px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="32.53125" y="241.5" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#eeeeee" d="M45.03125,241.5H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="187.375" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">25</tspan></text><path fill="none" stroke="#eeeeee" d="M45.03125,187.375H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="133.25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">50</tspan></text><path fill="none" stroke="#eeeeee" d="M45.03125,133.25H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="79.125" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">75</tspan></text><path fill="none" stroke="#eeeeee" d="M45.03125,79.125H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">100</tspan></text><path fill="none" stroke="#eeeeee" d="M45.03125,25H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="413.32566071428573" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2016 - 2017</tspan></text><text x="300.0043035714286" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2014</tspan></text><text x="186.68294642857143" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012</tspan></text><text x="73.36158928571429" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2010</tspan></text><rect x="67.69552142857142" y="79.125" width="11.332135714285714" height="162.375" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="124.3562" y="150.57" width="11.332135714285714" height="90.93" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="181.01687857142858" y="79.125" width="11.332135714285714" height="162.375" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="237.67755714285713" y="159.23000000000002" width="11.332135714285714" height="82.26999999999998" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="294.33823571428576" y="200.365" width="11.332135714285714" height="41.13499999999999" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="350.9989142857143" y="40.155" width="11.332135714285714" height="201.345" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="407.65959285714285" y="133.25" width="11.332135714285714" height="108.25" rx="0" ry="0" fill="#42a5f5" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect></svg><div class="morris-hover morris-default-style" style="left: 24.9475px; top: 108px; display: none;"><div class="morris-hover-row-label">2010</div><div class="morris-hover-point" style="color: #42a5f5">
+					统计分析:
+					75
+				</div></div></div>
+			</div>
+		</div>
+	</div><!-- end col -->
+
+	<div class="col-xl-4 col-sm-6">
+		<div class="card">
+			<div class="card-body h450">
+				<div class="dropdown float-right">
+					<a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+						<i class="zmdi zmdi-more-vert"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" class="dropdown-item">Action</a></li>
+						<li><a href="#" class="dropdown-item">Another action</a></li>
+						<li><a href="#" class="dropdown-item">Something else here</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item">Separated link</a></li>
+					</ul>
+				</div>
+				<h4 class="header-title m-t-0">总收入</h4>
+
+				<div class="row text-center m-t-30">
+					<div class="col-6">
+						<h3 data-plugin="counterup">7,653</h3>
+						<p class="text-muted">销售额</p>
+					</div>
+					<div class="col-6">
+						<h3 data-plugin="counterup">852</h3>
+						<p class="text-muted">网络销售</p>
+					</div>
+				</div>
+
+				<div id="morris-line-example" style="height: 280px; position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);" class="morris-chart m-t-10">
+					<svg height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; left: -0.3125px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="32.53125" y="241.5" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#eef0f2" d="M45.03125,241.5H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="187.375" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">25</tspan></text><path fill="none" stroke="#eef0f2" d="M45.03125,187.375H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="133.25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">50</tspan></text><path fill="none" stroke="#eef0f2" d="M45.03125,133.25H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="79.125" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">75</tspan></text><path fill="none" stroke="#eef0f2" d="M45.03125,79.125H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="32.53125" y="25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">100</tspan></text><path fill="none" stroke="#eef0f2" d="M45.03125,25H441.656" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="441.656" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2015</tspan></text><text x="385.03963951896753" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2014</tspan></text><text x="328.42327903793506" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2013</tspan></text><text x="271.65180524051624" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012</tspan></text><text x="215.03544475948377" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2011</tspan></text><text x="158.4190842784513" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2010</tspan></text><text x="101.80272379741885" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2009</tspan></text><text x="45.03125" y="254" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,6.75)"><tspan dy="4.25" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2008</tspan></text><path fill="none" stroke="#90caf9" d="M45.03125,241.5C59.22411844935471,214.4375,87.60985534806414,154.9296169630643,101.80272379741885,133.25C115.95681391767695,111.62961696306431,144.2649941581932,68.30000000000001,158.4190842784513,68.30000000000001C172.5731743987094,68.30000000000001,200.88135463922566,114.30625,215.03544475948377,133.25C229.18953487974187,152.19375,257.49771512025814,217.14745212038304,271.65180524051624,219.85C285.84467368987094,222.55995212038303,314.23041058858036,165.73980848153215,328.42327903793506,154.9C342.57736915819316,144.08980848153215,370.88554939870943,141.36875,385.03963951896753,133.25C399.19372963922564,125.13125,427.5019098797419,100.77499999999999,441.656,89.94999999999999" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><path fill="none" stroke="#42a5f5" d="M45.03125,133.25C59.22411844935471,119.71875,87.60985534806414,73.70509575923393,101.80272379741885,79.125C115.95681391767695,84.53009575923393,144.2649941581932,169.784375,158.4190842784513,176.55C172.5731743987094,183.315625,200.88135463922566,145.428125,215.03544475948377,133.25C229.18953487974187,121.071875,257.49771512025814,79.125,271.65180524051624,79.125C285.84467368987094,79.125,314.23041058858036,133.25,328.42327903793506,133.25C342.57736915819316,133.25,370.88554939870943,92.65625,385.03963951896753,79.125C399.19372963922564,65.59375,427.5019098797419,38.53125,441.656,25" stroke-width="3" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><circle cx="45.03125" cy="241.5" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="101.80272379741885" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="158.4190842784513" cy="68.30000000000001" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="215.03544475948377" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="271.65180524051624" cy="219.85" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="328.42327903793506" cy="154.9" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="385.03963951896753" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="441.656" cy="89.94999999999999" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="45.03125" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="101.80272379741885" cy="79.125" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="158.4190842784513" cy="176.55" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="215.03544475948377" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="271.65180524051624" cy="79.125" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="328.42327903793506" cy="133.25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="385.03963951896753" cy="79.125" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle><circle cx="441.656" cy="25" r="0" fill="#ffffff" stroke="#999999" stroke-width="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></circle></svg><div class="morris-hover morris-default-style" style="display: none;"></div></div>
+			</div>
+		</div>
+	</div><!-- end col -->
+
+	<div class="col-xl-4 col-sm-6">
+		<div class="card">
+			<div class="card-body h450"  style="width:calc(100% - 20px)">
+				<h4 class="text-dark  header-title m-t-0 m-b-30">总收入</h4>
+
+				<div class="widget-chart text-center">
+					<div id="sparkline5" class="text-center"
+					><canvas width="100%" height="100%" style="display: inline-block; width: 414.656px; height: 165px; vertical-align: top;"></canvas></div>
+
+					<ul class="list-inline m-t-15">
+						<li>
+							<h5 class="text-muted m-t-20">目标</h5>
+							<h4 class="m-b-0">$1000</h4>
+						</li>
+						<li>
+							<h5 class="text-muted m-t-20">上周</h5>
+							<h4 class="m-b-0">$523</h4>
+						</li>
+						<li>
+							<h5 class="text-muted m-t-20">上月</h5>
+							<h4 class="m-b-0">$965</h4>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div class="col-xl-8 col-sm-12">
+		<div class="card">
+			<div class="card-body h450">
+		<div id="china_map" style="height:410px"></div>
+		</div>
+	</div>
+	</div>
+
+
+	<div class="col-xl-4 col-sm-12">
+		<div class="card">
+			<div class="card-body h450">
+				<div class="dropdown float-right">
+					<a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+						<i class="zmdi zmdi-more-vert"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" class="dropdown-item">Action</a></li>
+						<li><a href="#" class="dropdown-item">Another action</a></li>
+						<li><a href="#" class="dropdown-item">Something else here</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item">Separated link</a></li>
+					</ul>
+				</div>
+
+				<h4 class="header-title m-t-0 m-b-30">销售分析</h4>
+
+				<p class="font-600 m-b-5">iMacs <span class="text-custom float-right">80%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm m-b-20">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-danger -->
+				</div><!-- /.progress .no-rounded -->
+
+				<p class="font-600 m-b-5">iBooks <span class="text-custom float-right">50%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm m-b-20">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-pink -->
+				</div><!-- /.progress .no-rounded -->
+
+				<p class="font-600 m-b-5">iPhone 5s <span class="text-custom float-right">70%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm m-b-20">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width: 70%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-info -->
+				</div><!-- /.progress .no-rounded -->
+
+				<p class="font-600 m-b-5">iPhone 6 <span class="text-custom float-right">65%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm m-b-20">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 65%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-warning -->
+				</div><!-- /.progress .no-rounded -->
+
+				<p class="font-600 m-b-5">iPhone 4 <span class="text-custom float-right">65%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm m-b-20">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 65%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-warning -->
+				</div><!-- /.progress .no-rounded -->
+
+				<p class="font-600 m-b-5">iPhone 6s <span class="text-custom float-right">40%</span></p>
+				<div class="progress progress-bar-custom-alt progress-sm mb-2">
+					<div class="progress-bar progress-bar-custom progress-animated wow animated animated" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%; visibility: visible; animation-name: animationProgress;">
+					</div><!-- /.progress-bar .progress-bar-success -->
+				</div><!-- /.progress .no-rounded -->
+
+
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xl-8 col-sm-12">
+		<div class="card">
+			<div class="card-body h450">
+				<div class="dropdown float-right">
+					<a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+						<i class="zmdi zmdi-more-vert"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li><a href="#" class="dropdown-item">Action</a></li>
+						<li><a href="#" class="dropdown-item">Another action</a></li>
+						<li><a href="#" class="dropdown-item">Something else here</a></li>
+						<li class="dropdown-divider"></li>
+						<li><a href="#" class="dropdown-item">Separated link</a></li>
+					</ul>
+				</div>
+
+				<h4 class="header-title m-t-0 m-b-30">最近订单</h4>
+
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+						<tr>
+							<th>#</th>
+							<th>用户</th>
+							<th>下单日期</th>
+							<th>发货日期</th>
+							<th>状态</th>
+							<th>负责人</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>1</td>
+							<td>孙尚香</td>
+							<td>01/01/2016 - 2017</td>
+							<td>26/04/2016 - 2017</td>
+							<td><span class="badge badge-danger">未发货</span></td>
+							<td>刘</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>林依依</td>
+							<td>01/01/2016 - 2017</td>
+							<td>26/04/2016 - 2017</td>
+							<td><span class="badge badge-danger">未发货</span></td>
+							<td>刘</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>王晓霞</td>
+							<td>01/05/2016 - 2017</td>
+							<td>10/05/2016 - 2017</td>
+							<td><span class="badge badge-danger">未发货</span></td>
+							<td>刘</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>王茜茜</td>
+							<td>01/01/2016 - 2017</td>
+							<td>31/05/2016 - 2017</td>
+							<td><span class="badge badge-info">已发货</span></td>
+							</td>
+							<td>刘</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>林宥嘉</td>
+							<td>01/01/2016 - 2017</td>
+							<td>31/05/2016 - 2017</td>
+							<td><span class="badge badge-info">已发货</span></td>
+							<td>刘</td>
+						</tr>
+
+						<tr>
+							<td>6</td>
+							<td>周丕红</td>
+							<td>01/01/2016 - 2017</td>
+							<td>31/05/2016 - 2017</td>
+							<td><span class="badge badge-success">已签收</span></td>
+							<td>刘</td>
+						</tr>
+
+						<tr>
+							<td>7</td>
+							<td>刘莎莎</td>
+							<td>01/01/2016 - 2017</td>
+							<td>31/05/2016 - 2017</td>
+							<td><span class="badge badge-success">已签收</span></td>
+							<td>刘</td>
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div><!-- end col -->
+
+</div>
+
+
+
+<% } %>

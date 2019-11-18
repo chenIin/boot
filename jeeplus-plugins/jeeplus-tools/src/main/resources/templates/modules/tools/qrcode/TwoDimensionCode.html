@@ -1,0 +1,86 @@
+<%
+layout("/include/_container.html", {title:"二维码测试", parent:"常用工具"}){
+%>
+
+<script type="text/javascript">
+    //去后台解析二维码返回解析内容
+    function readContent(str) {
+        $.ajax({
+            type: "POST",
+            url: '${ctx}/tools/TwoDimensionCodeController/readTwoDimensionCode',
+            data: {imgId: str, tm: new Date().getTime()},
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                if ("success" == data.result) {
+                    if ('null' == data.readContent || null == data.readContent) {
+                        jp.alert('读取失败，二维码无效！');
+                    } else {
+                        $("#readContent").text(data.readContent);
+                    }
+                } else {
+                    jp.alert('后台读取出错！');
+                    return;
+                }
+            }
+        });
+    }
+    //生成二维码
+    function createTwoD() {
+
+        if ($("#encoderContent").val() == "") {
+            jp.alert('输入框不能为空！');
+            $("#encoderContent").focus();
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: '${ctx}/tools/TwoDimensionCodeController/createTwoDimensionCode.do',
+            data: {encoderContent: $("#encoderContent").val(), tm: new Date().getTime()},
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+
+                if (data.success) {
+                    $("#encoderImgId").attr("src", data.body.filePath);
+                } else {
+                    jp.alert('生成二维码失败！');
+                    return false;
+                }
+
+
+            }
+        });
+        return true;
+    }
+</script>
+<div class="white-box">
+    <form class="form-horizontal">
+                <div class="form-group row">
+                    <div class="col-sm-2 control-label">二维码内容</div>
+
+                    <div class="col-sm-8">
+                        <input type="text" id="encoderContent" title="输入内容" value="http://www.jeeplus.org"
+                               class="form-control">
+                        <span class="text-muted"><small>请输入要生成二维码的字符串</small></span>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-custom waves-effect waves-light" onclick="createTwoD();">生成</a>
+                    </div>
+                </div>
+                <div class="hr-line-dashed"></div>
+
+                <div class="form-group row">
+                    <div class="col-sm-2 control-label">二维码图像</div>
+
+                    <div class="col-sm-8">
+                        <img id="encoderImgId" cache="false" width="265px" height="265px;" style="display: block"/>
+                        <span class="text-muted"><small>使用微信扫一扫</small></span>
+                    </div>
+
+                </div>
+            </form>
+</div>
+
+
+<% } %>

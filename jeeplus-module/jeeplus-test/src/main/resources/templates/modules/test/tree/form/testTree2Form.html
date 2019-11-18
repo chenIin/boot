@@ -1,0 +1,61 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"组织机构"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.go("${ctx}/test/tree/form/testTree2");
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			})
+
+		});
+		
+	</script>
+		<form id="inputForm"  action="${ctx}/test/tree/form/testTree2/save" method="post" class="form-horizontal  white-box">
+		<input type="hidden" name="id" value="${testTree2.id!}"/>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>名称：</label>
+					<div class="col-sm-9">
+						<input name="name" value="${testTree2.name!}"    class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>排序：</label>
+					<div class="col-sm-9">
+						<input name="sort" value="${testTree2.sort!}"    class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">上级父级编号:</label>
+					<div class="col-sm-9">
+						<#treeselect id="parent" name="parent.id" value="${testTree2.parent.id!}" labelName="parent.name" labelValue="${testTree2.parent.name!}"
+						title="父级编号" url="/test/tree/form/testTree2/treeData" extId="${testTree2.id!}" class="form-control " allowClear="true"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">备注信息：</label>
+					<div class="col-sm-9">
+						<textarea name="remarks" rows="4"    class="form-control ">${testTree2.remarks!}</textarea>
+					</div>
+				</div>
+		<div class="form-group row">
+            <div class="offset-sm-3 col-sm-9 m-t-15">
+            <% if(mode == "add" || mode == "edit"){ %>
+                <button type="submit" class="btn btn-custom waves-effect waves-light btn-md m-r-5">
+                    <i class="fa fa-save"></i> 提交
+                </button>
+            <% } %>
+                <a href="${ctx}/test/tree/form/testTree2" class="btn btn-danger waves-effect waves-light btn-md">
+                    <i class="fa fa fa-arrow-left"></i> 返回
+                </a>
+		    </div>
+		</div>
+		</form>
+
+<% } %>

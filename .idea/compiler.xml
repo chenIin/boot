@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="ECharts" />
+        <module name="jeeplus-admin" />
+        <module name="jeeplus-admin (1)" />
+        <module name="jeeplus-bpm" />
+        <module name="jeeplus-calendar" />
+        <module name="jeeplus-core" />
+        <module name="jeeplus-dashboard" />
+        <module name="jeeplus-datasource" />
+        <module name="jeeplus-echarts" />
+        <module name="jeeplus-gencode" />
+        <module name="jeeplus-layim" />
+        <module name="jeeplus-mail" />
+        <module name="jeeplus-monitor" />
+        <module name="jeeplus-oa" />
+        <module name="jeeplus-quartz" />
+        <module name="jeeplus-test" />
+        <module name="jeeplus-tools" />
+        <module name="jeeplus-ureport" />
+        <module name="jeeplus-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="1.8" />
+      <module name="core" target="1.8" />
+      <module name="ddlutils" target="6" />
+      <module name="dynamic-datasource-spring-boot-starter" target="1.7" />
+      <module name="dynamic-mybatis-sample" target="1.8" />
+      <module name="ECharts" target="1.6" />
+      <module name="jeeplus" target="1.8" />
+      <module name="jeeplus-admin" target="1.8" />
+      <module name="jeeplus-admin (1)" target="1.8" />
+      <module name="jeeplus-biz" target="1.8" />
+      <module name="jeeplus-bpm" target="1.8" />
+      <module name="jeeplus-calendar" target="1.8" />
+      <module name="jeeplus-cms" target="1.8" />
+      <module name="jeeplus-coloradmin" target="1.8" />
+      <module name="jeeplus-common" target="1.8" />
+      <module name="jeeplus-core" target="1.8" />
+      <module name="jeeplus-dashboard" target="1.8" />
+      <module name="jeeplus-datasource" target="1.8" />
+      <module name="jeeplus-datav" target="1.8" />
+      <module name="jeeplus-echarts" target="1.8" />
+      <module name="jeeplus-gencode" target="1.8" />
+      <module name="jeeplus-iim" target="1.8" />
+      <module name="jeeplus-ireport" target="1.8" />
+      <module name="jeeplus-layim" target="1.8" />
+      <module name="jeeplus-mail" target="1.8" />
+      <module name="jeeplus-monitor" target="1.8" />
+      <module name="jeeplus-oa" target="1.8" />
+      <module name="jeeplus-plugin" target="1.8" />
+      <module name="jeeplus-quartz" target="1.8" />
+      <module name="jeeplus-test" target="1.8" />
+      <module name="jeeplus-tools" target="1.8" />
+      <module name="jeeplus-ui-demo" target="1.8" />
+      <module name="jeeplus-ureport" target="1.8" />
+      <module name="jeeplus-web" target="1.8" />
+      <module name="tools" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="jeeplus-admin" options="" />
+      <module name="jeeplus-admin (1)" options="-parameters" />
+      <module name="jeeplus-bpm" options="" />
+      <module name="jeeplus-calendar" options="" />
+      <module name="jeeplus-coloradmin" options="-parameters" />
+      <module name="jeeplus-core" options="" />
+      <module name="jeeplus-dashboard" options="-parameters" />
+      <module name="jeeplus-datasource" options="-parameters" />
+      <module name="jeeplus-echarts" options="-parameters" />
+      <module name="jeeplus-gencode" options="-parameters" />
+      <module name="jeeplus-layim" options="" />
+      <module name="jeeplus-mail" options="" />
+      <module name="jeeplus-monitor" options="" />
+      <module name="jeeplus-oa" options="" />
+      <module name="jeeplus-quartz" options="" />
+      <module name="jeeplus-test" options="" />
+      <module name="jeeplus-tools" options="" />
+      <module name="jeeplus-ureport" options="" />
+      <module name="jeeplus-web" options="" />
+    </option>
+  </component>
+</project>

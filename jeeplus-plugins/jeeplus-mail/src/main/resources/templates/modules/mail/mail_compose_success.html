@@ -1,0 +1,34 @@
+<%
+layout("/include/_container.html", {title:"发信结果", parent:"我的信箱"}){
+%>
+<script>
+    var index = jp.info("成功");
+    jp.close(index);
+</script>
+<div class="wrapper-page">
+
+    <div class="m-t-30 card card-body">
+        <div class="text-center">
+            <h4 class="text-uppercase font-bold">
+                <% if(mailCompose.status == '0'){ %>
+                <p>邮件已经保存到草稿箱！</p>
+                <%} else if(mailCompose.status == '1') { %>
+                <p>邮件发送成功！</p>
+                <% } %>
+            </h4>
+        </div>
+        <div class="p-2 text-center">
+            <i class="zmdi zmdi-email-open text-success" style="font-size: 48px;"></i>
+        </div>
+
+    </div>
+    <!-- end card-box -->
+
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <p class="text-muted"><a class="btn-sm btn-custom btn-sm" href="${ctx}/mailBox/list?orderBy=sendtime desc" class="text-primary m-l-5">返回</a></p>
+        </div>
+    </div>
+
+</div>
+<% } %>

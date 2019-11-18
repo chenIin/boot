@@ -1,0 +1,93 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"请假申请"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+					jp.go("${ctx}"+ data.body.targetUrl);
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			});
+
+	        $('#startTime').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+	        $('#endTime').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+		});
+	</script>
+	<div class="white-box">
+		<form id="inputForm"  action="${ctx}/test/activiti/testActivitiLeave/save" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="${testActivitiLeave.id!}"/>
+		<input type="hidden" name="act.taskId" value="${testActivitiLeave.act.taskId!}"/>
+		<input type="hidden" name="act.taskName" value="${testActivitiLeave.act.taskName!}"/>
+		<input type="hidden" name="act.taskDefKey" value="${testActivitiLeave.act.taskDefKey!}"/>
+		<input type="hidden" name="act.procInsId" value="${testActivitiLeave.act.procInsId!}"/>
+		<input type="hidden" name="act.procDefId" value="${testActivitiLeave.act.procDefId!}"/>
+		<input type="hidden"id="flag"  name="act.flag" value="${testActivitiLeave.act.flag!}"/>
+		<div class="form-group text-center">
+			<h3> 请假申请</h3>
+		</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>请假类型：</label>
+					<div class="col-sm-9">
+					<#radiobuttons path="leaveType" value="${testActivitiLeave.leaveType!}" items="${fn.getDictList('oa_leave_type')}" itemLabel="label" itemValue="value" class="required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>请假开始时间：</label>
+					<div class="col-sm-9">
+                    <div class="input-group">
+                        <input readonly="" id="startTime"   name="startTime"  placeholder="请选择日期" class="form-control   required"   value="${fn.formatDate(testActivitiLeave.startTime!, 'yyyy-MM-dd HH:mm:ss')}">
+                        <div class="input-group-append">
+                            <span class="input-group-text btn-custom border text-white"><i class="ti-calendar"></i></span>
+                        </div>
+                    </div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>请假结束时间：</label>
+					<div class="col-sm-9">
+                    <div class="input-group">
+                        <input readonly="" id="endTime"   name="endTime"  placeholder="请选择日期" class="form-control   required"   value="${fn.formatDate(testActivitiLeave.endTime!, 'yyyy-MM-dd HH:mm:ss')}">
+                        <div class="input-group-append">
+                            <span class="input-group-text btn-custom border text-white"><i class="ti-calendar"></i></span>
+                        </div>
+                    </div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>报销事由：</label>
+					<div class="col-sm-9">
+					<textarea name="reason" rows="4"    class="form-control required">${testActivitiLeave.reason!}</textarea>
+					</div>
+				</div>
+		<div class="form-group row">
+		<div class="offset-sm-3 col-sm-9 m-t-15">
+		<% if(testActivitiLeave.act.taskDefKey! != '' && !testActivitiLeave.act.finishTask! && testActivitiLeave.act.isNextGatewaty!){ %>
+            <button id="agree" class="btn btn-custom waves-effect waves-light btn-md m-r-5" type="submit"  onclick="$('#flag').val('yes')">重新提交</button>
+			<button id="reject" class="btn btn-danger waves-effect waves-light btn-md m-r-5" type="submit" onclick="$('#flag').val('no')">销毁申请</button>
+
+		<% } %>
+		<% if(testActivitiLeave.act.startTask!){ %>
+            <button class="btn btn-custom waves-effect waves-light btn-md m-r-5" data-loading-text="正在提交...">提 交</button>
+		<% } %>
+		 <a href="javascript:window.history.go(-1)" class="btn btn-danger waves-effect waves-light btn-md">
+             <i class="fa fa fa-arrow-left"></i> 返回
+         </a>
+        </div>
+		</div>
+		</form>
+			<%if(isNotEmpty(testActivitiLeave.id!)){ %>
+			<#flowChart procInsId="${testActivitiLeave.act.procInsId}"/>
+			<#histoicFlow procInsId="${testActivitiLeave.act.procInsId}" />
+		<% } %>
+		</div>
+<% } %>

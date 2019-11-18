@@ -1,0 +1,42 @@
+<div class="left side-menu">
+    <div class="sidebar-inner slimscrollleft">
+        <!--- Divider -->
+        <div id="sidebar-menu">
+            <% if(fn.getCookie(request,'layout') == null && fn.getDefaultLayout() == 'horizontal' || fn.getCookie(request,'layout') == 'horizontal'){ %>
+                <div id="t1"  class="jp-tab-content tab-content">
+                    <#jpMenu  menu="${fn.getTopMenu()}" position="left" >	</#jpMenu>
+                </div>
+                <ul id="t2">
+                    <#menu  value="${fn.getTopMenu()}">	</#menu>
+                </ul>
+            <% }else{ %>
+                <ul>
+                    <#menu  value="${fn.getTopMenu()}">	</#menu>
+                </ul>
+            <% } %>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+
+
+<style>
+    @media (max-width: 767px){
+        #t1 {
+            display: none;
+        }
+
+    }
+    @media (min-width: 768px){
+        #t2 {
+            display: none;
+        }
+    }
+
+</style>
+
+<!-- end #sidebar -->
+

@@ -1,0 +1,99 @@
+<%
+layout("/include/_container.html", {title:"列表", parent:"车辆"}){
+%>
+    <div class="row">
+    <div class="col-sm-3 col-md-2 p-r-5">
+        <div class="white-box">
+            <div>
+			<div style="width: calc(100% - 50px);float: left">
+		<div class="input-group">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-sm waves-effect waves-light btn-custom"><i class="fa fa-search"></i></button>
+					</span>
+					<input type="text" class="form-control input-sm" id="search_q" placeholder="查找...">
+				</div>
+			</div>
+			<div style="width: 45px; float:right">
+               <button  class="btn btn-sm waves-effect waves-light btn-custom"  onclick="jp.openSaveDialog('新建车系', '${ctx}/test/treetable/dialog/carKind1/form/add','800px', '500px')">
+                <i class="fa fa-plus"></i>
+                </button>
+            </div>
+            </div>
+            <div id="carKind1jsTree"></div>
+        </div>
+    </div>
+    <div class="col-sm-9 col-md-10" style="padding-left: 0px">
+
+	
+				<!-- 文件上传 -->
+    <div id="import-collapse" class="collapse white-box m-b-5">
+        <a class="jp-ti-close close close" onclick="$('#import-collapse').fadeToggle()">
+            <i class="fa fa-times"></i>
+        </a>
+        <form id="importForm" method="POST" enctype="multipart/form-data" class="row form-horizontal" >
+            <div class="col-xs-12 col-sm-6">
+                <input name="file" type="file" class="required form-control">只允许导入&ldquo;xls&rdquo;或&ldquo;xlsx&rdquo;格式文件！<br>　
+
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <a  id="btnImportExcel"  class="btn btn-custom waves-effect waves-light btn-rounded m-l-10 btn-md"><i class="fa fa-upload"></i> 开始上传</a>
+                <a  id="btnDownloadTpl" class="btn btn-custom waves-effect waves-light btn-rounded m-l-10 btn-md"><i class="fa fa-download"></i> 下载模板</a>
+            </div>　
+        </form>
+    </div>
+    <!-- 搜索框-->
+    <div id="search-collapse" class="white-box collapse m-b-5">
+        <a class="jp-ti-close close" onclick="$('#search-collapse').fadeToggle()">
+            <i class="fa fa-times"></i>
+        </a>
+        <form id="searchForm" class="form-inline">
+						 <div class="form-group m-b-10 m-r-10">
+							<label class="m-r-10" title="车系：">车系：</label>
+							<#treeselect id="kind" name="kind.id" labelName="kind.name"
+								title="车系" url="/test/treetable/dialog/carKind1/treeData" extId="${car1.id}" class="form-control " allowClear="true"/>
+						</div>
+					 <div class="form-group m-b-10 m-r-10">
+                <a  id="search" class="btn  btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+                <a  id="reset" class="btn  btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+            </div>
+				</form>
+
+				</div>
+
+	<div class="white-box">
+
+	<!-- 工具栏 -->
+	<div id="toolbar">
+			 <% if(shiro.hasPermission("test:treetable:dialog:car1:add") ){ %>
+			 	<button id="add" class="btn btn-custom waves-effect w-xs waves-light" onclick="add()">
+					<i class="fa fa-plus"></i> 新建
+				</button>
+			<% } %>
+			 <% if(shiro.hasPermission("test:treetable:dialog:car1:edit") ){ %>
+			    <button id="edit" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="edit()">
+	            	<i class="fa fa-edit"></i> 修改
+	        	</button>
+			<% } %>
+			 <% if(shiro.hasPermission("test:treetable:dialog:car1:del") ){ %>
+				<button id="remove" class="btn btn-white waves-effect w-xs waves-light" disabled onclick="del()">
+	            	<i class="fa fa-remove"></i> 删除
+	        	</button>
+			<% } %>
+			 <% if(shiro.hasPermission("test:treetable:dialog:car1:import") ){ %>
+				<button id="import"  class="btn btn-white waves-effect w-xs waves-light" >
+					<i class="fa fa-upload"></i> 导入
+				</button>
+			<% } %>
+			 <% if(shiro.hasPermission("test:treetable:dialog:car1:export") ){ %>
+	        	<button id="export" class="btn btn-white waves-effect w-xs waves-light">
+					<i class="fa fa-download"></i> 导出
+				</button>
+			 <% } %>
+		    </div>
+		
+	<!-- 表格 -->
+	<table id="car1Table" class="table-bordered"   data-toolbar="#toolbar"></table>
+	</div>
+	<% include("carKind1TreeList.js"){} %>
+	<% include("car1List.js"){} %>
+	<% } %>

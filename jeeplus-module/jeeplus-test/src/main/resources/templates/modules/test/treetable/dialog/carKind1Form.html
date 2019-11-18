@@ -1,0 +1,58 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+						});
+
+		function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+			}else{
+                var index = jp.loading();
+                jp.post("${ctx}/test/treetable/dialog/carKind1/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refreshTree();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.toastr_success(data.msg)
+
+                    }else{
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.close(index);
+                })
+			}
+
+        }
+	</script>
+		<form id="inputForm"  method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${carKind1.id!}"/>
+		<table class="table table-bordered">
+		   <tbody>
+				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>名称：</label></td>
+					<td class="width-35">
+						<input name="name" value="${carKind1.name!}"    class="form-control required"/>
+					</td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>排序：</label></td>
+					<td class="width-35">
+						<input name="sort" value="${carKind1.sort!}"    class="form-control required"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
+					<td class="width-35">
+						<textarea name="remarks" rows="4"    class="form-control ">${carKind1.remarks!}</textarea>
+					</td>
+					<td class="width-15 active"><label class="pull-right">父级编号：</label></td>
+					<td class="width-35">
+						<#treeselect id="parent" name="parent.id" value="${carKind1.parent.id!}" labelName="parent.name" labelValue="${carKind1.parent.name!}"
+						title="父级编号" url="/test/treetable/dialog/carKind1/treeData" extId="${carKind1.id!}" class="form-control " allowClear="true"/>
+					</td>
+		 	</tbody>
+		</table>
+		</form>
+<% } %>

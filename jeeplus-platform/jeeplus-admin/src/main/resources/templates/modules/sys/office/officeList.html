@@ -1,0 +1,18 @@
+<%
+layout("/include/_container.html", {title:"机构管理", parent:"单位组织"}){
+%>
+<div class="white-box">
+		<!-- 工具栏 -->
+		<div class="pull-left" id="toolbar">
+			<% if(shiro.hasPermission("sys:office:add")){ %>
+				<button class="btn btn-custom waves-effect w-xs waves-light"  onclick="jp.openSaveDialog('新增机构', '${ctx}/sys/office/form','800px', '600px')" ><i class="fa fa-plus"></i> 新建</button>
+			<%  } %>
+
+		   <button id="expandAllBtn"  class="btn btn-white waves-effect w-xs waves-light">展开/折叠 所有</button>
+		</div>
+
+		<table id="treeTable" class="table table-bordered table-hover">
+		</table>
+</div>
+<% include("officeList.js"){} %>
+<% } %>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<% include("_common_header.html"){} %>
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">-->
+<!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">-->
+
+<body>
+<div class="p-15">
+<% if(fn.getCookie(request,'content-tab') == '2'){ %>
+
+    <div class="row" style="margin-bottom: -35px">
+        <div class="col-sm-12">
+            <div class="btn-group float-right m-b-20">
+                <ol class="breadcrumb pull-right">
+                    <li class="breadcrumb-item"><a href="javascript:;">${parent}</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:;">${title}</a></li>
+                </ol>
+            </div>
+            <h4 class="page-title">${title}</h4>
+
+        </div>
+    </div>
+<% } %>
+
+    ${layoutContent}
+</div>
+</body>
+</html>

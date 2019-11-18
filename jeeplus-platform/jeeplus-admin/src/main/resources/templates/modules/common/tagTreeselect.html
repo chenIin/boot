@@ -1,0 +1,65 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+		var tree;
+		$(document).ready(function(){
+			
+			//jstree初始化
+			$('#jstree').jstree({
+				'core' : {
+					"multiple" : true,
+					"animation" : 0,
+					"themes" : { "icons":true ,"stripes":false, "responsive": false},
+					'data' : {
+						"url" : "${ctx}${url}${fn.indexOf(url,'?')==-1?'?':'&'}&extId=${extId!}&isAll=${isAll!}&module=${module!}&t="+ new Date().getTime(),
+						"dataType" : "json" // needed only if you do not supply JSON headers
+					}
+				},
+				'plugins' : ['types' ,'search', ${checked!'false'=='true'?"'checkbox',":""} 'wholerow'],
+				"types": {
+					"default": {
+						"icon": "fa fa-folder text-custom"
+					},
+					"file": {
+						"icon": "fa fa-file text-success"
+					}
+				}
+
+			});
+			
+			 tree = $('#jstree').jstree(true);
+			 
+			 //查找功能
+			  var to = false;
+			  $('#search_q').keyup(function () {
+			    if(to) { clearTimeout(to); }
+			    to = setTimeout(function () {
+			      var v = $('#search_q').val();
+			      $('#jstree').jstree(true).search(v);
+			    }, 250);
+			  });
+			  $("#searchButton").click(function(){
+				  var v = $('#search_q').val();
+			      $('#jstree').jstree(true).search(v);
+			  })
+			
+		});
+		
+	</script>
+
+			<div class="p-15">
+				<% if(allowSearch! == 'true'){ %>
+				<!-- 搜索 -->
+				<div class="input-group">
+					<span class="input-group-prepend">
+						<button type="button" class="btn btn-sm waves-effect waves-light btn-custom"><i class="fa fa-search"></i></button>
+					</span>
+					<input type="text" class="form-control input-sm"  id="search_q" placeholder="查找..." >
+				</div>
+				<%}%>
+
+				<div id="jstree" class="overflow-auto; border-0"></div>
+			</div>
+
+<% } %>

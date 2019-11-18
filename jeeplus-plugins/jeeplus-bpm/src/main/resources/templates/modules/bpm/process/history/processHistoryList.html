@@ -1,0 +1,37 @@
+<%
+layout("/include/_container.html", {title:"已经结束的流程", parent:"流程管理"}){
+%>
+<!-- 搜索 -->
+<div id="search-collapse" class="collapse white-box" style="position:relative;margin-bottom: 5px">
+    <a class="jp-ti-close close"
+       onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+            <label class="label-item single-overflow pull-left">流程实例ID：</label>
+            <input type="text" id="procInsId" name="procInsId" class="form-control"/>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <label class="label-item single-overflow pull-left" title="流程定义ID：">流程定义ID：</label>
+            <input type="text" id="procDefKey" name="procDefKey" class="form-control"/>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+
+<div class="white-box">
+    <!-- 工具栏 -->
+    <div id="toolbar">
+        <button id="remove" class="btn btn-danger waves-effect w-xs waves-light" disabled onclick="deleteAll()">
+            <i class="fa fa-remove"></i> 删除
+        </button>
+    </div>
+    <!-- 表格 -->
+    <table id="procInsTable" data-toolbar="#toolbar"></table>
+</div>
+<% include("processHistoryList.js"){} %>
+<% } %>

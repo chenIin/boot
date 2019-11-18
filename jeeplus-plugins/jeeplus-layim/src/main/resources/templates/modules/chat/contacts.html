@@ -1,0 +1,102 @@
+<%
+layout("/include/_container.html", {title:"通讯录", parent:"个人中心"}){
+%>
+<style>
+    .contact-type {
+        padding-top: 30px !important;
+    }
+</style>
+
+<div class="wrapper wrapper-content">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>我的通讯录</h2>
+            <p>
+                可以向通讯录中的人发送，站内信，短消息和发起会话。
+            </p>
+            <form id="searchForm" action="${ctx}/layim/contact/index" method="post"
+                  class="input-group">
+                <input name="name" maxlength="50" placeholder="查找联系人"
+                       class="input form-control"/>
+                <span class="input-group-btn">
+                        <button type="submit" class="btn btn btn-primary">
+                            <i class="fa fa-search"></i> 搜索</button>
+                </span>
+            </form>
+
+            <div class="clients-list" style="margin-top: 20px;">
+                <ul class="nav nav-tabs">
+                    <span class="pull-right small text-muted">${list.~size} 个联系人</span>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="full-height-scroll">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <tbody>
+
+                                    <% for(var user in list){ %>
+                                    <tr>
+                                        <td class="client-avatar">
+                                            <% if(isEmpty(user.photo)){ %>
+                                            <span class="jp-avatar jp-avatar-circle jp-avatar-icon"
+                                                  style="background-color: rgb(135, 208, 104);">
+                                                    <i class="jp-icon jp-icon-user">
+                                                    </i>
+                                                </span>
+                                            <% } else{ %>
+                                            <img alt="image"
+                                                 style="width: 50px;max-height: 50px;"
+                                                 src="${user.photo}">
+                                            <%}%>
+                                        </td>
+                                        <td class="contact-type"><a data-toggle="tab" href="#contact-1"
+                                                                    class="client-link">${user.name!}</a>
+                                        <td class="contact-type">${user.office.name!}</td>
+                                        <td class="contact-type">
+                                            <i class="icon iconfont icon-mail"></i>
+                                            ${user.email!}
+                                        </td>
+                                        <td class="contact-type">
+                                            <i class="icon iconfont icon-iphone"></i>
+                                            ${user.mobile!}
+                                        </td>
+                                        <td class="contact-type">
+                                            <i class="icon iconfont icon-phone"></i>
+                                            ${user.phone!}
+                                        </td>
+                                        <td class="contact-type"><a
+                                                href="${ctx}/mailCompose/sendLetter?id=${user.id}"
+                                                class="jp-btn jp-btn-primary jp-btn-sm"><i
+                                                class="fa fa-envelope"> 站内信</i></a>
+                                        </td>
+                                        <td class="contact-type">
+                                            <% if(user.loginFlag == '1'){ %>
+                                            <font class="jp-tag jp-tag-has-color"
+                                                  style="background-color: rgb(135, 208, 104);">激活</font>
+
+                                            <% } else{ %>
+
+                                            <font class="jp-tag jp-tag-has-color"
+                                                  style="background-color: rgb(208,99,75);">未激活</font>
+
+                                            <% } %>
+
+                                        </td>
+                                    </tr>
+                                    <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% } %>

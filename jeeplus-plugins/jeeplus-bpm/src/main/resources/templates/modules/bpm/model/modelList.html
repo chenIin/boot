@@ -1,0 +1,40 @@
+<%
+layout("/include/_container.html", {title:"模型列表", parent:"流程管理"}){
+%>
+<!-- 搜索 -->
+<div id="search-collapse" class="collapse white-box m-b-5">
+    <a class="jp-ti-close close"
+       onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+            <label class="label-item single-overflow pull-left" title="流程分类：">流程分类：</label>
+            <#select path="category" items="${fn.getDictList('act_category')}" itemLabel="label" itemValue="value"
+            class="form-control w-lg"/>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+
+<div class="white-box">
+    <!-- 工具栏 -->
+    <div id="toolbar">
+        <% if(shiro.hasPermission("act:model:create") ){ %>
+        <button id="add" class="btn btn-custom waves-effect w-xs waves-light" onclick="add()"><i class="fa fa-plus"></i> 新建</button>
+        <% } %>
+        <% if(shiro.hasPermission("act:model:del") ){ %>
+        <button id="remove" class="btn btn-danger waves-effect w-xs waves-light" disabled onclick="deleteAll()">
+            <i class="fa fa-remove"></i> 删除
+        </button>
+        <% } %>
+    </div>
+    <!-- 表格 -->
+    <table id="actModelTable" data-toolbar="#toolbar"></table>
+</div>
+
+<% include("modelList.js"){} %>
+<% } %>

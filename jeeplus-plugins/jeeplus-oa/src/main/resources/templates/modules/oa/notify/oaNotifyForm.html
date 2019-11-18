@@ -1,0 +1,118 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"通知公告"}){
+%>
+<script type="text/javascript">
+    $(document).ready(function () {
+        jp.ajaxForm("#inputForm", function (data) {
+            if (data.success) {
+                jp.toastr_success(data.msg);
+                jp.go("${ctx}/oa/oaNotify");
+            } else {
+                jp.toastr_error(data.msg);
+            }
+        })
+    });
+</script>
+<div class="white-box">
+    <form id="inputForm" action="${ctx}/oa/oaNotify/save" method="post" class="form-horizontal">
+        <input type="hidden" type="hidden" name="id" value="${oaNotify.id}">
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>类型：</label>
+            <div class="col-sm-10">
+                <#select path="type" value="${oaNotify.type!}" class="required"
+                items="${fn.getDictList('oa_notify_type')}" itemLabel="label" itemValue="value"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>标题：</label>
+            <div class="col-sm-10">
+                <input type="text" name="title" value="${oaNotify.title}" maxlength="200" class="form-control required">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>内容：</label>
+            <div class="col-sm-10">
+                <textarea name="content" rows="6" maxlength="2000"
+                          class="form-control required">${oaNotify.content}</textarea>
+            </div>
+        </div>
+        <% if(oaNotify.status != '1'){ %>
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>状态：</label>
+            <div class="col-sm-10">
+                <#radiobuttons path="status" value="${oaNotify.status}" items="${fn.getDictList('oa_notify_status')}"
+                itemLabel="label" itemValue="value" class="i-checks required"/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>接受人：</label>
+            <div class="col-sm-10">
+                <#userselect id="oaNotifyRecord" name="oaNotifyRecordIds" value="${oaNotify.oaNotifyRecordIds}"
+                labelName="oaNotifyRecordNames" labelValue="${oaNotify.oaNotifyRecordNames}"
+                class="form-control required" isMultiSelected="${true}"/>
+            </div>
+        </div>
+        <% } %>
+        <% if(oaNotify.status == '1'){ %>
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><font color="red">*</font>接受人：</label>
+            <div class="col-sm-10">
+                <div class="jp-table jp-table-large jp-table-bordered jp-table-scroll-position-left">
+                    <div class="jp-table-content">
+                        <div class="jp-table-body">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th class=""><span>接受人</span></th>
+                                    <th class=""><span>接受部门</span></th>
+                                    <th class=""><span>阅读状态</span></th>
+                                    <th class=""><span>阅读时间</span></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% for(oaNotifyRecord in oaNotify.oaNotifyRecordList){ %>
+                                <tr>
+                                    <td>
+                                        ${oaNotifyRecord.user.name}
+                                    </td>
+                                    <td>
+                                        ${oaNotifyRecord.user.office.name}
+                                    </td>
+                                    <td>
+                                        ${fn.getDictLabel(oaNotifyRecord.readFlag, 'oa_notify_read', '')}
+                                    </td>
+                                    <td>
+                                        ${fn.formatDate(oaNotifyRecord.readDate , "yyyy-MM-dd HH:mm:ss" )}
+                                    </td>
+                                </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                            已查阅：${oaNotify.readNum} &nbsp; 未查阅：${oaNotify.unReadNum} &nbsp;
+                            总共：${parseInt(oaNotify.readNum) + parseInt(oaNotify.unReadNum)}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+        <div class="form-group row ">
+            <div class="offset-sm-2 col-sm-10">
+            <% if(oaNotify.status != '1'){ %>
+            <% if(shiro.hasPermission("oa:oaNotify:edit") ){ %>
+            <button type="submit"  class="btn btn-custom waves-effect waves-light w-xs m-r-5" data-loading-text="正在提交...">
+                <i class="fa fa-save"></i> 提交
+            </button>
+            <% } %>
+            <% } %>
+            <a href="${ctx}/oa/oaNotify" class="btn btn-danger waves-effect waves-light w-xs">
+                <i class="fa fa fa-arrow-left"></i> 返回
+            </a>
+            </div>
+        </div>
+
+    </form>
+</div>
+<% } %>

@@ -1,0 +1,54 @@
+<%
+layout("/include/_container.html", {title:"查看邮件", parent:"我的信箱"}){
+%>
+<div class="white-box">
+    <div class="row">
+        <div class="col-lg-2 col-md-3  col-sm-12 col-xs-12 inbox-panel">
+            <div>
+                <a href="${ctx}/mailCompose/sendLetter" class="btn btn-block btn--md btn-custom waves-effect waves-light">写信</a>
+                <div class="list-group mail-list  m-t-20">
+                    <a href="${ctx}/mailBox/list" class="list-group-item b-0">收件箱 <span
+                            class="label label-rouded label-success pull-right">${noReadCount}/${mailBoxCount}</span></a>
+                    <a href="${ctx}/mailCompose/list?status=1" class="list-group-item active">已发送 <span
+                            class="label label-rouded label-warning pull-right">${mailComposeCount}</span></a>
+                    <a href="${ctx}/mailCompose/list?status=0" class="list-group-item b-0">草稿箱 <span
+                            class="label label-rouded label-default pull-right">${mailDraftCount}</span></a>
+                </div>
+                <h5 class="panel-title m-t-40 m-b-0">标签</h5>
+                <hr class="m-t-5">
+                <div class="list-group b-0 mail-list">
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-info m-r-10"></span>工作</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-warning m-r-10"></span>家庭</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-purple m-r-10"></span>个人</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-danger m-r-10"></span>朋友</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-success m-r-10"></span>社交</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12 mail_listing">
+            <h5 class=" m-t-0 m-b-10">主题：${mailCompose.mail.title!}</h5>
+            <h5 class="text-muted  m-t-0 m-b-30">时间：${mailCompose.sendtime!,dateFormat="yyyy-MM-dd hh:mm:ss"}</h5>
+            <h5 class="  m-t-0 m-b-15">正文：</h5>
+
+            ${fn.unescapeHtml(mailCompose.mail.content!)}
+            <hr/>
+            <div class="b-all p-20">
+                <p class="p-b-20">点击 <a href="#" onclick="del('${mailCompose.id!}')">删除</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function del(id) {
+        jp.confirm('确认要删除该站内信吗？', function () {
+            jp.get('${ctx}/mailCompose/delete?id=' + id, function (data) {
+                if (data.success) {
+                    jp.toastr_success("删除信件成功!");
+                    jp.go("${ctx}/mailCompose/list?status=1");
+                }
+            })
+        })
+    }
+</script>
+<% } %>

@@ -1,0 +1,34 @@
+<%
+layout("/include/_container.html", {title:"已办任务", parent:"流程管理"}){
+%>
+<!-- 搜索 -->
+<div id="search-collapse" class="collapse white-box m-b-5">
+    <a class="jp-ti-close close"
+       onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+            <label class="label-item single-overflow pull-left" title="流程类型：">流程类型：</label>
+            <#select path="category" class="form-control w-lg" items="${fn.getDictList('act_category')}" itemLabel="label" itemValue="value" />
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <label class="m-r-10" title="创建时间：">创建时间：</label>
+            <div class="input-daterange input-group" id="date-range">
+                <input type="text" id="beginDate" name="beginDate" placeholder="请选择日期" readonly="" class="form-control">
+                <span class="input-group-text bg-custom b-0 text-white">to</span>
+                <input type="text" readonly="" id="endDate" name="endDate" placeholder="请选择日期" class="form-control">
+            </div>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+<div class="white-box">
+    <!-- 表格 -->
+    <table id="actTable"></table>
+</div>
+<% include("taskHistoricList.js"){} %>
+<% } %>

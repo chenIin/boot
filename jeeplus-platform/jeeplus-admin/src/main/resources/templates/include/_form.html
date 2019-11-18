@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<% include("_common_header.html"){} %>
+<body class="fix-header show-sidebar">
+	<!-- ============================================================== -->
+	<!-- Preloader -->
+	<!-- ============================================================== -->
+
+	<!-- ============================================================== -->
+	<!-- Wrapper -->
+	<!-- ============================================================== -->
+	<div id="wrapper">
+		<!-- ============================================================== -->
+		<!-- Topbar header - style you can find in pages.scss -->
+		<!-- ============================================================== -->
+		<% include("_common_top.html"){} %>
+		<!-- End Top Navigation -->
+		<!-- ============================================================== -->
+		<!-- Left Sidebar - style you can find in sidebar.scss  -->
+		<!-- ============================================================== -->
+		<% include("_common_left.html"){} %>
+		<!-- ============================================================== -->
+		<!-- End Left Sidebar -->
+		<!-- ============================================================== -->
+		<!-- ============================================================== -->
+		<!-- Page Content -->
+		<!-- ============================================================== -->
+			<div id="page-wrapper" class="expand">
+				<div id="container-fluid" class="container-fluid">
+
+			<div id="container">
+				<div class="row bg-title shadow">
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+						<h4 class="page-title"><a href="javascript:history.go(-1)"><i class="fa  fa-angle-left"></i> 返回</a></h4>
+					</div>
+					<div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+						<ol class="breadcrumb">
+							<li><a href="${parentUrl!'#'}">${parent!}</a></li>
+							<li class="active">${title!}</li>
+						</ol>
+					</div>
+					<!-- /.col-lg-12 -->
+				</div>
+				<div id="loading" style="display:none;position:absolute;z-index: 99999" class="jp-spin jp-spin-lg jp-spin-spinning"><span class="jp-spin-dot jp-spin-dot-spin"><i></i><i></i><i></i><i></i></span></div>
+				<div class="jp-spin-container">
+					${layoutContent}
+				</div>
+
+			</div>
+
+
+					<!-- ============================================================== -->
+					<!-- Right sidebar -->
+					<!-- ============================================================== -->
+					<!-- .right-sidebar -->
+					<% include("_common_right.html"){} %>
+					<!-- ============================================================== -->
+					<!-- End Right sidebar -->
+					<!-- ============================================================== -->
+				</div>
+				<!-- /.container-fluid -->
+				<!--<footer class="footer text-center shadow"> 2018 &copy;  jeeplus </footer>-->
+			</div>
+			<!-- /#page-wrapper -->
+		</div>
+
+</body>
+
+
+</html>

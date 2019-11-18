@@ -1,0 +1,127 @@
+<%
+layout("/include/_dialog.html"){
+%>
+<link href="${ctxStatic}/plugins/layui/dist/css/layim.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript">
+    function search() {//查询，页码清零
+        $("#pageNo").val(0);
+        $("#searchForm").submit();
+        return false;
+    }
+
+    function reset() {//重置，页码清零
+        $("#pageNo").val(0);
+        $("#searchForm div.form-group input").val("");
+        $("#searchForm div.form-group select").val("");
+        $("#searchForm").submit();
+        return false;
+    }
+
+    function sortOrRefresh() {//刷新或者排序，页码不清零
+
+        $("#searchForm").submit();
+        return false;
+    }
+
+    function page(n, s) {//翻页
+        $("#pageNo").val(n);
+        $("#pageSize").val(s);
+        $("#searchForm").submit();
+        $("span.page-size").text(s);
+        return false;
+    }
+</script>
+<style>
+    .pagination {
+        margin: auto;
+        display: inline-block;
+    }
+    .pagination>li , .pagination>li  a{
+        display: inline;
+    }
+</style>
+</head>
+<body>
+
+<div class="layim-chat layim-chat-friend">
+
+
+    <form id="searchForm" modelAttribute="chatHistory" action="${ctx}/layim/chatHistory/" method="post"
+          class="form-inline">
+        <input type="hidden" name="id" value="${chatHistory.id!}"/>
+        <input type="hidden" name="type" value="${chatHistory.type!}"/>
+        <input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo!}"/>
+        <input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize!}"/>
+
+
+        <div class="row">
+            <div class="col-sm-9 ">
+                <div class="input-group m-t-10 " style="margin-left: 50px">
+                    <input name="msg" maxlength="1024" class="form-control" placeholder="">
+                    <span class="input-group-append">
+                        <button type="button" onclick="search()" class="btn waves-effect waves-light btn-custom"><i
+                                class="fa fa-search"></i>查询</button>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </form>
+    <div class="layim-chat-main" style="width:70%; height:100%">
+        <ul>
+                <% for(var chatHistory in page.list){
+                %>
+                <% if(fn.contains(chatHistory.sender!, "_msg_")){ %>
+
+                        chatHistory.sender = fn.substringAfter(chatHistory.sender!, "_msg_");
+                <% } %>
+               <% if(fn.getUser().loginName != chatHistory.sender){ %>
+                    <li>
+                        <div class="layim-chat-user">
+                            <img src="${fn.getByLoginName(chatHistory.sender).photo!}">
+                            <cite>${fn.getByLoginName(chatHistory.sender).name}<i>
+                                ${fn.formatDate(chatHistory.createDate! , "yyyy-MM-dd HH:mm:ss" )}
+                            </i></cite>
+                        </div>
+                        <div class="layim-chat-text">
+                            <% if(fn.contains(chatHistory.msg!, "img[")){ %>
+                                <img src="${fn.substring(chatHistory.msg!, 4, fn.length(chatHistory.msg!)-1)}"/>
+                            <% } else { %>
+                                ${chatHistory.msg}
+                            <% } %>
+                        </div>
+                    </li>
+                <% } else { %>
+                    <li class="layim-chat-mine">
+                        <div class="layim-chat-user">
+                            <img src="${fn.getByLoginName(chatHistory.sender).photo}">
+                            <cite><i>
+                                ${fn.formatDate(chatHistory.createDate! , "yyyy-MM-dd HH:mm:ss" )}
+                            </i>${fn.getByLoginName(chatHistory.sender).name}
+                            </cite>
+                        </div>
+                        <div class="layim-chat-text">
+                            <% if(fn.contains(chatHistory.msg!, "img[")){ %>
+                                <img src="${fn.substring(chatHistory.msg, 4, fn.length(chatHistory.msg)-1)}"/>
+                            <% } else { %>
+                                ${chatHistory.msg!}
+                            <% } %>
+                        </div>
+                    </li>
+               <% } %>
+            <% } %>
+            <% } %>
+        </ul>
+
+
+    </div>
+
+</div>
+</div>
+
+</div>
+</div>
+${page}
+</div>
+</body>
+</html>

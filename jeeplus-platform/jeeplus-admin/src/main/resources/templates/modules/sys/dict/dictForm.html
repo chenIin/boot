@@ -1,0 +1,42 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+        function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+            }else{
+                jp.loading();
+                jp.post("${ctx}/sys/dict/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.success(data.msg)
+
+                    }else{
+                        jp.error(data.msg);
+                    }
+                })
+            }
+
+        }
+	</script>
+	<form id="inputForm"  action="${ctx}/sys/dict/save" method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${dictType.id!}">
+		<#message content="${message!}"/>
+		<table class="table table-bordered">
+		   <tbody>
+		       <tr>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>类型:</label></td>
+		         <td class="width-35" ><input name="type" value="${dictType.type!}" maxlength="50" class="form-control required abc"/></td>
+		      </tr>
+		       <tr>
+		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>描述:</label></td>
+		          <td  class="width-35" ><input name="description" value="${dictType.description!}" maxlength="50" class="form-control required"/></td>
+		      </tr>
+		   </tbody>
+		   </table>   
+	</form>
+<% } %>

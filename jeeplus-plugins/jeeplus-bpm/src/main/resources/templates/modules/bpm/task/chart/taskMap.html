@@ -1,0 +1,27 @@
+<%
+layout("/include/_container.html", {title:"流程跟踪", parent:"流程管理"}){
+%>
+<style type="text/css">
+    .procPic {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .actImpl {
+        position: absolute;
+        border: 2px solid red;
+        -moz-border-radius: 12px;
+        -webkit-border-radius: 12px;
+        -khtml-border-radius: 12px;
+        border-radius: 12px;
+    }
+</style>
+<div class="white-box">
+    <img src="${ctx}/act/task/processPic?procDefId=${procDefId}" class="procPic"/>
+    <% for(var a in actImpls){ %>
+    <div class="actImpl" style="left:${a.x-2}px;top:${a.y-2}px;width:${a.width}px;height:${a.height}px;"></div>
+    <% } %>
+</div>
+
+<% } %>

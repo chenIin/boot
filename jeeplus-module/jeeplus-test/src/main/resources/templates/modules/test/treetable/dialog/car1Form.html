@@ -1,0 +1,58 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+
+					});
+
+		function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+			}else{
+                var index = jp.loading();
+                jp.post("${ctx}/test/treetable/dialog/car1/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.toastr_success(data.msg)
+
+                    }else{
+                        jp.toastr_error(data.msg);
+                    }
+                    jp.close(index);
+                })
+			}
+
+        }
+	</script>
+		<form id="inputForm"  method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${car1.id!}"/>
+		<table class="table table-bordered">
+		   <tbody>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">品牌：</label></td>
+					<td class="width-35">
+						<input name="name" value="${car1.name!}"    class="form-control "/>
+					</td>
+					<td class="width-15 active"><label class="pull-right">车系：</label></td>
+					<td class="width-35">
+						<#treeselect id="kind" name="kind.id"  labelName="kind.name" labelValue="${car1.kind.name!}"
+							title="车系" url="/test/treetable/dialog/carKind1/treeData" extId="${car1.id}" class="form-control " allowClear="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right">简介：</label></td>
+					<td class="width-35">
+						<textarea name="remarks" rows="4"    class="form-control ">${car1.remarks!}</textarea>
+					</td>
+					<td class="width-15 active"></td>
+		   			<td class="width-35" ></td>
+		  		</tr>
+		 	</tbody>
+		</table>
+		</form>
+<% } %>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<% include("_common_header.html"){} %>
+<% include("layIM-init.html"){} %>
+<% include("systemInfoSocket-init.html"){} %>
+<body class="p-b-0">
+
+<!-- Begin page -->
+<div id="wrapper"  class="h-100">
+
+    <!-- Top Bar Start -->
+    <% include("_common_top.html"){} %>
+    <!-- Top Bar End -->
+
+    <!-- ========== Left Sidebar Start ========== -->
+    <% include("_common_left.html"){} %>
+    <!-- Left Sidebar End -->
+
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+        ${layoutContent}
+    <!-- ============================================================== -->
+    <!-- End Right content here -->
+    <!-- ============================================================== -->
+
+
+    <!-- Right Sidebar -->
+    <% include("_common_right.html"){} %>
+    <!-- /Right-bar -->
+
+
+</div>
+
+<script src="${ctxStatic}/plugins/layout/layout.js"></script>
+<!-- end page container -->
+</body>
+</html>

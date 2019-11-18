@@ -1,0 +1,313 @@
+<%
+layout("/include/_container.html", {title:"已安装插件", parent:"插件管理"}){
+%>
+<script>
+   $(document).ready(function () {
+       jp.get("${ctx}/sys/plugin/data", function (data) {
+           var getTpl = demo.innerHTML
+               , view = document.getElementById('view');
+           laytpl(getTpl).render(data, function (html) {
+               view.innerHTML = html;
+           });
+       });
+   })
+
+</script>
+<style>
+    .jp-card{
+        width: 200px;
+    }
+    .jp-card-cover1 {
+        background-color: #efefef;
+        padding-top: 20px;
+        padding-left: 0px;
+        text-align: center;
+        display: block;
+        height: 160px;
+        margin: 5px;
+        color: rgba(0,0,0,0.5);
+    }
+    .tooltip-content {
+        /*width: 160px;*/
+        /*margin: 0 0 20px -80px;*/
+        padding: 20px;
+    }
+
+    .mytooltip {
+        display: inline;
+        position: relative;
+        z-index: 9999
+    }
+
+    .tooltip-item {
+        background: rgba(0, 0, 0, .1);
+        cursor: pointer;
+        display: inline-block;
+        font-weight: 500;
+        padding: 0 10px
+    }
+
+    .tooltip-item::after {
+        content: '';
+        position: absolute;
+        width: 360px;
+        height: 20px;
+        bottom: 100%;
+        left: 50%;
+        pointer-events: none;
+        -webkit-transform: translateX(-50%);
+        transform: translateX(-50%)
+    }
+
+    .mytooltip:hover .tooltip-item::after {
+        pointer-events: auto
+    }
+
+    .tooltip-content {
+        position: absolute;
+        z-index: 9999;
+        width: 360px;
+        left: 50%;
+        margin: 0 0 20px -180px;
+        bottom: 100%;
+        text-align: left;
+        font-size: 14px;
+        line-height: 30px;
+        box-shadow: -5px -5px 15px rgba(48, 54, 61, .2);
+        background: #2b2b2b;
+        opacity: 0;
+        cursor: default;
+        pointer-events: none
+    }
+
+    .tooltip-effect-1 .tooltip-content {
+        -webkit-transform: translate3d(0, -10px, 0);
+        transform: translate3d(0, -10px, 0);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s;
+        color: #fff
+    }
+
+    .tooltip-effect-2 .tooltip-content {
+        -webkit-transform-origin: 50% calc(110%);
+        transform-origin: 50% calc(110%);
+        -webkit-transform: perspective(1000px) rotate3d(1, 0, 0, 45deg);
+        transform: perspective(1000px) rotate3d(1, 0, 0, 45deg);
+        -webkit-transition: opacity .2s, -webkit-transform .2s;
+        transition: opacity .2s, transform .2s
+    }
+
+    .tooltip-effect-3 .tooltip-content {
+        -webkit-transform: translate3d(0, 10px, 0) rotate3d(1, 1, 0, 25deg);
+        transform: translate3d(0, 10px, 0) rotate3d(1, 1, 0, 25deg);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-4 .tooltip-content {
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+        -webkit-transform: scale3d(.7, .3, 1);
+        transform: scale3d(.7, .3, 1);
+        -webkit-transition: opacity .2s, -webkit-transform .2s;
+        transition: opacity .2s, transform .2s
+    }
+
+    .tooltip-effect-5 .tooltip-content {
+        width: 180px;
+        margin-left: -90px;
+        -webkit-transform-origin: 50% calc(106%);
+        transform-origin: 50% calc(106%);
+        -webkit-transform: rotate3d(0, 0, 1, 15deg);
+        transform: rotate3d(0, 0, 1, 15deg);
+        -webkit-transition: opacity .2s, -webkit-transform .2s;
+        transition: opacity .2s, transform .2s;
+        -webkit-transition-timing-function: ease, cubic-bezier(.17, .67, .4, 1.39);
+        transition-timing-function: ease, cubic-bezier(.17, .67, .4, 1.39)
+    }
+
+    .mytooltip:hover .tooltip-content {
+        pointer-events: auto;
+        opacity: 1;
+        -webkit-transform: translate3d(0, 0, 0) rotate3d(0, 0, 0, 0);
+        transform: translate3d(0, 0, 0) rotate3d(0, 0, 0, 0)
+    }
+
+    .tooltip.tooltip-effect-2:hover .tooltip-content {
+        -webkit-transform: perspective(1000px) rotate3d(1, 0, 0, 0deg);
+        transform: perspective(1000px) rotate3d(1, 0, 0, 0deg)
+    }
+
+    .tooltip-content::after {
+        content: '';
+        top: 100%;
+        left: 50%;
+        border: solid transparent;
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border-color: #2a3035 transparent transparent;
+        border-width: 10px;
+        margin-left: -10px
+    }
+
+    .tooltip-content img {
+        position: relative;
+        height: 140px;
+        display: block;
+        float: left;
+        margin-right: 1em
+    }
+
+    .tooltip-text {
+        font-size: 14px;
+        line-height: 24px;
+        display: block;
+        padding: 1.31em 1.21em 1.21em 0;
+        color: #fff
+    }
+
+    .tooltip-effect-5 .tooltip-text {
+        padding: 1.4em
+    }
+
+    a.mytooltip {
+        font-weight: 500;
+        color: #fb9678
+    }
+
+    .tooltip-content2 {
+        position: absolute;
+        z-index: 9999;
+        width: 80px;
+        height: 80px;
+        padding-top: 25px;
+        left: 50%;
+        margin-left: -40px;
+        bottom: 100%;
+        border-radius: 50%;
+        text-align: center;
+        background: #fb9678;
+        color: #fff;
+        opacity: 0;
+        margin-bottom: 20px;
+        cursor: default;
+        pointer-events: none
+    }
+
+    .tooltip-content2 i {
+        opacity: 0
+    }
+
+    .mytooltip:hover .tooltip-content2, .mytooltip:hover .tooltip-content2 i {
+        opacity: 1;
+        font-size: 18px
+    }
+
+    .tooltip-effect-6 .tooltip-content2 {
+        -webkit-transform: translate3d(0, 10px, 0) rotate3d(1, 1, 1, 45deg);
+        transform: translate3d(0, 10px, 0) rotate3d(1, 1, 1, 45deg);
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-6 .tooltip-content2 i {
+        -webkit-transform: scale3d(0, 0, 1);
+        transform: scale3d(0, 0, 1);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-7 .tooltip-content2 {
+        -webkit-transform: translate3d(0, 10px, 0);
+        transform: translate3d(0, 10px, 0);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-7 .tooltip-content2 i {
+        -webkit-transform: translate3d(0, 15px, 0);
+        transform: translate3d(0, 15px, 0);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-8 .tooltip-content2 {
+        -webkit-transform: translate3d(0, 10px, 0) rotate3d(0, 1, 0, 90deg);
+        transform: translate3d(0, 10px, 0) rotate3d(0, 1, 0, 90deg);
+        -webkit-transform-origin: 50% 100%;
+        transform-origin: 50% 100%;
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-8 .tooltip-content2 i {
+        -webkit-transform: scale3d(0, 0, 1);
+        transform: scale3d(0, 0, 1);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-9 .tooltip-content2 {
+        -webkit-transform: translate3d(0, -20px, 0);
+        transform: translate3d(0, -20px, 0);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .tooltip-effect-9 .tooltip-content2 i {
+        -webkit-transform: translate3d(0, 20px, 0);
+        transform: translate3d(0, 20px, 0);
+        -webkit-transition: opacity .3s, -webkit-transform .3s;
+        transition: opacity .3s, transform .3s
+    }
+
+    .mytooltip:hover .tooltip-content2, .mytooltip:hover .tooltip-content2 i {
+        pointer-events: auto;
+        -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        transform: translate3d(0, 0, 0) scale3d(1, 1, 1)
+    }
+
+</style>
+
+<script id="demo" type="text/html">
+    {{#  d.rows.forEach(function(item,index,array){ }}
+    <div class="jp-card jp-card-bordered">
+        <div class="jp-card-cover1" >
+            <i class="{{item.icon}}" style="font-size: 36px"></i>
+            <div class="jp-card-meta-detail">
+                <font style="font-weight: 700"> {{item.name}}</font>
+                <p style="font-weight: 700">{{item.version}}</p>
+            </div>
+
+
+            <span class="mytooltip tooltip-effect-1">
+                <span class="tooltip-item">详情</span>
+                <span class="tooltip-content clearfix">
+                      <label>{{item.name}}(<a href="{{item.site}}" target="_blank">访问官网</a>)</label>
+                      <span class="tooltip-text">简介: {{item.description}}</span>
+                </span>
+            </span>
+        </div>
+    </div>
+    {{#  }); }}
+
+
+</script>
+
+
+<div class="white-box">
+    <div class="row">
+
+
+
+
+        <div id="view"></div>
+
+
+    </div>
+
+    <% } %>

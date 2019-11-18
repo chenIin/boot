@@ -1,0 +1,137 @@
+<%
+layout("/include/_container.html", {title:"查看草稿", parent:"我的信箱"}){
+%>
+<div class="white-box">
+    <div class="row">
+        <div class="col-lg-2 col-md-3  col-sm-12 col-xs-12 inbox-panel">
+            <div>
+                <a href="${ctx}/mailCompose/sendLetter" class="btn btn-block btn--md btn-custom waves-effect waves-light">写信</a>
+                <div class="list-group mail-list  m-t-20">
+                    <a href="${ctx}/mailBox/list" class="list-group-item b-0">收件箱 <span
+                            class="label label-rouded label-success pull-right">${noReadCount}/${mailBoxCount}</span></a>
+                    <a href="${ctx}/mailCompose/list?status=1" class="list-group-item b-0">已发送 <span
+                            class="label label-rouded label-warning pull-right">${mailComposeCount}</span></a>
+                    <a href="${ctx}/mailCompose/list?status=0" class="list-group-item active">草稿箱 <span
+                            class="label label-rouded label-default pull-right">${mailDraftCount}</span></a>
+                </div>
+                <h5 class="panel-title m-t-40 m-b-0">标签</h5>
+                <hr class="m-t-5">
+                <div class="list-group b-0 mail-list">
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-info m-r-10"></span>工作</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-warning m-r-10"></span>家庭</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-purple m-r-10"></span>个人</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-danger m-r-10"></span>朋友</a>
+                    <a href="#" class="list-group-item"><span class="fa fa-circle text-success m-r-10"></span>社交</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-10 col-md-9 col-sm-12 col-xs-12 mail_listing">
+            <div class="mail-box-header">
+                <h5>
+                    写信
+                </h5>
+            </div>
+
+            <div class="mail-box m-t-20">
+
+
+                <div class="mail-body">
+                    <form id="inputForm"  action="${ctx}/mailCompose/save" method="post"
+                          class="form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"><font color="red">*</font>发送到：</label>
+                            <div class="col-sm-8">
+                                <#userselect id="receiver" name="receiverIds" value="${mailCompose.receiver.id!}"
+                                labelName="receiverNames" labelValue="${mailCompose.receiver.name!}"
+                                cssClass="form-control required" isMultiSelected="${true}"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">主题：</label>
+
+                            <div class="col-sm-8">
+                                <input type="text" id="title" name="mail.title" class="form-control"
+                                       value="${mailCompose.mail.title!}">
+                            </div>
+                        </div>
+                        <input type="hidden" id="id" name="id" value="${mailCompose.id}"><!-- id -->
+                        <input type="hidden" id="status" name="status" value="0"><!-- 0 草稿  1 已发送 -->
+                        <input type="hidden" id="overview" name="mail.overview"><!-- 内容简介 -->
+                        <input type="hidden" id="content" name="mail.content"><!-- 内容 -->
+                    </form>
+                </div>
+
+                <div class="mail-text h-200">
+
+                    <div class="summernote">
+
+
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="mail-body text-right tooltip-demo">
+
+                    <button type="button" class="btn btn-sm  w-xs btn-custom waves-effect waves-light" onclick="sendLetter()"><i
+                            class="fa fa-reply"></i> 发送
+                    </button>
+                    <button type="button" class="btn btn-sm w-xs btn-custom waves-effect waves-light" onclick="saveLetter()"><i class="fa fa-pencil"></i> 存为草稿
+                    </button>
+                    <a href="${ctx}/mailBox/list" class="btn btn-sm w-xs btn-danger waves-effect waves-light"><i class="fa fa-times"></i>
+                        放弃</a>
+                </div>
+                <div class="clearfix"></div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div id="template" style="display: none">
+    ${fn.unescapeHtml(mailCompose.mail.content!)}
+</div>
+<script>
+    $(document).ready(function () {
+
+        //富文本初始化
+        $('.summernote').summernote({
+            height: 300,
+            lang: 'zh-CN',
+            focus: true
+        });
+
+        $(".summernote").summernote("code", $("#template").html());
+
+    });
+
+    function sendLetter() {
+        if ($("#receiverId").val() == '' || $("#receiverId").val() == undefined) {
+            jp.alert('收件人不能为空！');
+            return;
+        }
+        if ($("#title").val() == '') {
+            jp.alert('标题不能为空！');
+            return;
+        }
+        $("#status").val("1");
+        $("#content").val($('.summernote').summernote("code"));
+        $("#overview").val($(".note-editable").text().substring(0, 20));
+        jp.loading();
+        $("#inputForm").submit();
+    }
+
+    function saveLetter() {
+        if ($("#title").val() == '') {
+            jp.alert('标题不能为空！');
+            return;
+        }
+        $("#status").val("0");
+        $("#content").val($('.summernote').summernote("code"));
+        $("#overview").val($(".note-editable").text().substring(0, 20));
+        jp.loading();
+        $("#inputForm").submit();
+    }
+</script>
+
+<% } %>

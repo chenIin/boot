@@ -1,0 +1,3 @@
+<input type="text" id="${name!}" name="${name!}" maxlength="5" class="txt required" style="font-weight:bold;width:80px;${inputCssStyle!}"/>
+<img src="${ctxPath}/servlet/validateCodeServlet" onclick="$('.${name!}Refresh').click();" class="mid ${name!}" style="${imageCssStyle!}"/>
+<a href="javascript:" onclick="$('.${name!}').attr('src','${ctxPath}/servlet/validateCodeServlet?'+new Date().getTime());" class="mid ${name!}Refresh" style="${buttonCssStyle!}">看不清</a>

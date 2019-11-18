@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="org.jeeframework.gencode-2.0-tomcat8.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jeeplus-admin/src/main/webapp/WEB-INF/lib/org.jeeframework.gencode-2.0-tomcat8.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

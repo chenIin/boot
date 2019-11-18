@@ -1,0 +1,62 @@
+<%
+layout("/include/_dialog.html"){
+%>
+	<script type="text/javascript">
+        function save() {
+            var isValidate = jp.validateForm('#inputForm');//校验表单
+            if(!isValidate){
+                return false;
+            }else{
+                var index = jp.loading();
+                jp.post("${ctx}/sys/area/save",$('#inputForm').serialize(),function(data){
+                    if(data.success){
+                        jp.getParent().refresh();
+                        var dialogIndex = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                        parent.layer.close(dialogIndex);
+                        jp.success(data.msg)
+
+                    }else{
+                        jp.error(data.msg);
+                    }
+                })
+            }
+
+        }
+	</script>
+	<form id="inputForm"  action="${ctx}/sys/area/save" method="post" class="form-horizontal p-15">
+		<input type="hidden" name="id" value="${area.id}">
+		<table class="table table-bordered  table-condensed no-footer">
+		   <tbody>
+		      <tr>
+		         <td  class="width-15 active"><label class="pull-right">上级区域:</label></td>
+		         <td class="width-35" >
+					 <#treeselect id="area" name="parent.id" value="${area.parent.id!}" labelName="parent.name" labelValue="${area.parent.name!}"
+					title="区域" url="/sys/area/treeData" extId="${area.id}" class="form-control m-s" allowClear="true"/>
+				 </td>
+		         <td  class="width-15 active"><label class="pull-right">区域名称:</label></td>
+		         <td  class="width-35" >
+					 <input type="text" name="name" value="${area.name!}" maxlength="50" class="form-control required"/>
+				 </td>
+		      </tr>
+		      <tr>
+		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>区域编码:</label></td>
+		         <td class="width-35" >
+					 <input name="code" value="${area.code!}" type="text" maxlength="50" class="form-control required"/>
+				 </td>
+		         <td  class="width-15 active"><label class="pull-right">区域类型:</label></td>
+		         <td  class="width-35" >
+					 <#select path="type" value="${area.type!}" class="form-control "  items="${fn.getDictList('sys_area_type')}" itemLabel="label" itemValue="value" />
+				 </td>
+		      </tr>
+			  <tr>
+		         <td  class="width-15 active"><label class="pull-right">备注:</label></td>
+		         <td class="width-35" >
+					 <textarea name="remarks"  rows="3" maxlength="200" class="form-control ">${area.remarks!}</textarea>
+				 </td>
+		         <td  class="width-15 active"><label class="pull-right"></label></td>
+		         <td  class="width-35" ></td>
+		      </tr>
+		</tbody>
+		</table>
+	</form>
+<% } %>

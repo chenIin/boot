@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-core/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-bpm/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-admin/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-gencode/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-ireport/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-biz/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-cms/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-oa/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-tools/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-web/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-datasource/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/jeeplus-oa/pom.xml" />
+        <option value="$PROJECT_DIR$/layim/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/layim/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-mail/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-calendar/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-ui-demo/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-test/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/jeeplus-echarts/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/jeeplus-layim/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/jeeplus-datav/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-echarts/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/dynamic-datasource-spring-boot-starter/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/jeeplus-ireport/pom.xml" />
+        <option value="$PROJECT_DIR$/jeeplus-plugins/layim/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

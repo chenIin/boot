@@ -1,0 +1,31 @@
+<%
+layout("/include/_container.html", {title:"待办任务", parent:"流程管理"}){
+%>
+
+<!-- 搜索 -->
+<div id="search-collapse" class="collapse white-box" style="position:relative;margin-bottom: 5px">
+    <a class="jp-ti-close close" onclick="$('#search-collapse').fadeToggle()">
+        <i class="fa fa-times"></i>
+    </a>
+    <form id="searchForm" class="form-inline">
+        <div class="form-group m-b-10 m-r-10">
+                <label class="m-r-10" title="创建时间：">创建时间：</label>
+            <div class="input-daterange input-group" id="date-range">
+                <input type="text" id="beginDate" name="beginDate" placeholder="请选择日期" readonly="" class="form-control">
+                <span class="input-group-text bg-custom b-0 text-white">to</span>
+                <input type="text" readonly="" id="endDate" name="endDate" placeholder="请选择日期" class="form-control">
+            </div>
+        </div>
+        <div class="form-group m-b-10 m-r-10">
+            <a  id="search" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded"><i class="fa fa-search"></i> 查询</a>
+            <a  id="reset" class="btn btn-custom waves-effect waves-light m-l-10 btn-md btn-rounded" ><i class="fa fa-refresh"></i> 重置</a>
+        </div>
+    </form>
+</div>
+
+<!-- 表格 -->
+<div class="white-box">
+    <table id="actTable"></table>
+</div>
+<% include("taskTodoList.js"){} %>
+<% } %>

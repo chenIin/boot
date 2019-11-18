@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" type="image/png" sizes="16x16" href="${ctxStatic}/plugins/images/favicon.png">
+	<title>403页面</title>
+	<!-- App CSS -->
+	<link href="${ctxStatic}/plugins/bootstrap4/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="${ctxStatic}/plugins/fonts-icon/css/icons.css" rel="stylesheet" type="text/css" />
+	<link href="${ctxStatic}/common/css/${fn.getCookie(request,'theme') == null?fn.getDefaultTheme():fn.getCookie(request,'theme')}.css" id="theme" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<!-- Preloader -->
+
+
+<div class="wrapper-page" style="margin-top: 15%">
+
+	<div class="m-t-30 card card-body">
+		<div class="text-center">
+			<h4 class="text-uppercase font-bold m-b-0">禁止访问</h4>
+		</div>
+		<div class="p-3 text-center ex-page-content">
+			<div class="text-error">403</div>
+			<p class="text-muted font-13 m-t-20 mb-2">
+				${fn.getUser().name}，您的账号没有被授予任何角色和权限，因此无法访问系统，请联系管理员开通!</p>
+
+		</div>
+		<a href="${ctx}/logout" class="btn btn-info btn-rounded">安全退出</a> </div>
+
+	</div>
+
+</div>
+
+</body>
+</html>

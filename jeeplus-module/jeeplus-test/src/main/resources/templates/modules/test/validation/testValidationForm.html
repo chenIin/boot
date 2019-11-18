@@ -1,0 +1,140 @@
+<%
+layout("/include/_container.html", {title:"表单", parent:"测试校验"}){
+%>
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			jp.ajaxForm("#inputForm",function(data){
+				if(data.success){
+				    jp.toastr_success(data.msg);
+				    jp.unblock("#inputForm", 0);//立即清除loading层
+				    jp.go("${ctx}/test/validation/testValidation");
+				}else{
+				    jp.toastr_error(data.msg);
+				    $("#inputForm").find("button:submit").button("reset");
+				}
+			})
+
+	        $('#newDate').datetimepicker({
+				 format:'Y-m-d H:i'
+		    });
+		});
+		
+	</script>
+<form id="inputForm"  method="post" action="${ctx}/test/validation/testValidation/save"  class="form-horizontal white-box">
+		<input type="hidden" name="id" value="${testValidation.id!}"/>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>浮点数字：</label>
+					<div class="col-sm-9">
+					<input name="num" value="${testValidation.num!}"   max="69.3"  min="20.1" class="form-control required number"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>整数：</label>
+					<div class="col-sm-9">
+					<input name="num2" value="${testValidation.num2!}"   max="30"  min="10" class="form-control required digits"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>字符串：</label>
+					<div class="col-sm-9">
+					<input name="str" value="${testValidation.str!}" maxlength="65"  minlength="5"   class="form-control required"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>邮件：</label>
+					<div class="col-sm-9">
+					<input name="email" value="${testValidation.email!}" maxlength="60"  minlength="10"   class="form-control required email"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>网址：</label>
+					<div class="col-sm-9">
+					<input name="url" value="${testValidation.url!}" maxlength="30"  minlength="10"   class="form-control required url"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>日期：</label>
+					<div class="col-sm-9">
+                    <div class="input-group">
+                        <input readonly="" id="newDate"   name="newDate"  placeholder="请选择日期" class="form-control   required"   value="${fn.formatDate(testValidation.newDate!, 'yyyy-MM-dd HH:mm:ss')}">
+                        <div class="input-group-append">
+                            <span class="input-group-text btn-custom border text-white"><i class="ti-calendar"></i></span>
+                        </div>
+                    </div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>备注信息：</label>
+					<div class="col-sm-9">
+					<textarea name="remarks" rows="4"    class="form-control required">${testValidation.remarks!}</textarea>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>浮点数小于等于0：</label>
+					<div class="col-sm-9">
+					<input name="c1" value="${testValidation.c1!}"    class="form-control required isFloatLteZero"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>身份证号码：</label>
+					<div class="col-sm-9">
+					<input name="c2" value="${testValidation.c2!}"    class="form-control required isIdCardNo"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>QQ号码：</label>
+					<div class="col-sm-9">
+					<input name="c3" value="${testValidation.c3!}"    class="form-control required isQq"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>手机号码：</label>
+					<div class="col-sm-9">
+					<input name="c4" value="${testValidation.c4!}"    class="form-control required isMobile"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>中英文数字下划线：</label>
+					<div class="col-sm-9">
+					<input name="c5" value="${testValidation.c5!}"    class="form-control required stringCheck"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label"><font color="red">*</font>合法字符(a-z A-Z 0-9)：</label>
+					<div class="col-sm-9">
+					<input name="c6" value="${testValidation.c6!}"    class="form-control required isRightfulString"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">英语：</label>
+					<div class="col-sm-9">
+					<input name="en" value="${testValidation.en!}"    class="form-control  isEnglish"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">汉子：</label>
+					<div class="col-sm-9">
+					<input name="zn" value="${testValidation.zn!}"    class="form-control  isChinese"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 control-label">汉英字符：</label>
+					<div class="col-sm-9">
+					<input name="enzn" value="${testValidation.enzn!}"    class="form-control  isChineseChar"/>
+					</div>
+				</div>
+		<div class="form-group row">
+            <div class="offset-sm-3 col-sm-9 m-t-15">
+            <% if(mode == "add" || mode == "edit"){ %>
+                <button type="submit" class="btn btn-custom waves-effect waves-light btn-md m-r-5">
+                    <i class="fa fa-save"></i> 提交
+                </button>
+            <% } %>
+                <a href="${ctx}/test/validation/testValidation" class="btn btn-danger waves-effect waves-light btn-md">
+                    <i class="fa fa fa-arrow-left"></i> 返回
+                </a>
+            </div>
+        </div>
+		</form>
+<% } %>
